@@ -1,0 +1,80 @@
+!dark1 = #595540
+!dark2 = #262626
+!light1 = #8C5B34
+!light2 = #CC8139
+
+a:hover
+  :background-color black
+  :color white
+
+#header
+  :margin auto
+  :margin-top 2em
+  :padding 0em
+  :padding-top 1em
+  :padding-bottom 1em
+  :border = "5px solid " + !dark1
+  :text-align center
+  :width 600px
+  :background-color = !light2
+
+#log
+  :width 800px
+  :height 400px
+  :background-color papayawhip
+  :margin auto
+  :margin-top -5px
+  :padding 1em 1em 1em 1em
+  :border = "5px solid " + !dark1
+  :overflow auto
+  :font-family monospace
+  :color = !dark2
+  :font-size 1.25em
+
+  p.line
+    :padding 0.25em
+    :margin 0px
+
+  span.prompt
+    :font-weight normal
+    :color = !dark1
+  span.input
+    :font-weight bold
+    :color = !dark1
+  span.response
+    :font-weight bold
+    :color = !dark2
+  span.error
+    :font-weight normal
+    :background-color darkred
+    :color white
+    :padding 2px
+
+#toolbar
+  :width 750px
+  :margin auto
+  :padding 0em
+  :border 0px
+  :margin-top -5px
+
+  #input
+    :padding 0.5em
+    :width 100%
+    :font-size 1.50em
+    :background-color = !light2
+    :color !dark2
+    :font-family monospace
+    :border = "5px solid " + !dark1
+
+#footer
+  :width 600px
+  :margin auto
+  :text-align center
+  :color papayawhip
+  :font-size 0.75em
+  a
+    :color peachpuff
+
+body
+  :background-color = !dark2
+

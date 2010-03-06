@@ -1,0 +1,27 @@
+%html
+
+  %head
+
+    %link{rel: "stylesheet", href: "/style.css"}
+
+  %body
+
+    #header
+      %img{src: "/images/try-redis.png", width: 472, height: 70}
+
+    #log
+      %p.introduction
+        Welcome to Try Redis, a demonstration of the Redis database!
+
+    #toolbar
+      %input#input
+
+    #footer
+      :markdown
+        This page was written by [Alex McHale](http://github.com/alexmchale)
+        and inspired by [Try Mongo](http://try.mongodb.org).
+
+    %script{type: "application/x-javascript", src: "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"}
+    %script{type: "application/x-javascript", src: "http://documentcloud.github.com/underscore/underscore-min.js"}
+    %script{type: "application/x-javascript", src: "/javascripts/json2.js"}
+    %script{type: "application/x-javascript", src: "/javascripts/terminal.js"}
