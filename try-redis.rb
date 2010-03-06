@@ -82,6 +82,10 @@ module NamespaceTools
 
       args
 
+    when "sort"
+
+      # TODO implement support for the SORT command
+
     else
 
       raise "Invalid command."
@@ -132,13 +136,15 @@ class TryRedis < Sinatra::Base
 
   include NamespaceTools
 
-  def internal_command(argv)
-    case argv.first.downcase
+  def internal_command(command, args)
+    case command.downcase
     when "namespace" then namespace
+    when "help"      then help *args
     end
   end
 
   def evaluate_redis(command)
+    # Attempt to parse the given command string.
     argv =
       begin
         Shellwords.shellwords(command.to_s)
@@ -147,20 +153,14 @@ class TryRedis < Sinatra::Base
       end
     return { error: "No command received." } unless argv[0]
 
-    internal_result = internal_command(argv)
+    # Test if the command is an internal TryRedis command.
+    internal_result = internal_command(*argv)
     return { response: internal_result } if internal_result
 
     begin
-      {
-        response: execute_redis(argv)
-      }
+      { response: execute_redis(argv) }
     rescue Exception => e
-      puts e.message
-      e.backtrace.each {|l| puts l}
-
-      {
-        error: e.message
-      }
+      { error: e.message }
     end
   end
 
