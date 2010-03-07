@@ -21,7 +21,7 @@ server domain, :app, :web
 
 namespace :deploy do
   task :restart do
-    run "/etc/init.d/apache2 restart"
+    run "sudo /etc/init.d/apache2 restart"
   end
 end
 
