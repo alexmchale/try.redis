@@ -1,0 +1,24 @@
+### Key-Value Store Basics
+
+The essence of a key-value store is the ability to store some data, called a
+value, inside a key. This data can later be retrieved only if we know the exact
+key used to store it. There is no way to search for something by value.
+
+So for example I can use the command SET to store the value bar at key foo:
+
+> SET foo bar
+
+Redis will store our data permanently, so we can later ask for "What is the
+value stored at key foo?" and Redis will reply with bar:
+
+> GET foo => bar
+
+Other common operations provided by key-value stores are DEL used to delete a
+given key, and the associated value, SET-if-not-exists (called SETNX on Redis)
+that sets a key only if it does not already exist, and INCR that is able to
+atomically increment a number stored at a given key:
+
+> SET foo 10
+> INCR foo => 11
+> INCR foo => 12
+> INCR foo => 13

@@ -21,6 +21,8 @@ $(document).ready(function () {
           append(JSON.stringify(data.response), "response");
         } else if (data.error !== undefined) {
           append(data.error, "error");
+        } else if (data.notification !== undefined) {
+          append(data.notification, "notification", "", true);
         } else {
           append("Invalid response from TRY-REDIS server.", "error");
         }
@@ -49,16 +51,26 @@ $(document).ready(function () {
     }
   });
 
-  function append(str, klass, prefix) {
+  $("#toolbar").slideDown(500, function () {
+    $("#input").focus();
+  });
+
+  function append(str, klass, prefix, isHtml) {
     if (prefix === undefined) {
       prefix = "";
     }
 
+    if (!isHtml) {
+      prefix = escapeHtml(prefix);
+      str = escapeHtml(str);
+    }
+
     var message =
-      '<p class="line">' +
-      '<span class="prompt">' + escapeHtml(prefix) + '</span>' +
-      '<span class="' + klass + '">' + escapeHtml(str) + '</span>' +
-      '</p>'
+      '<div class="line ' + klass + '">' +
+      '<div class="nopad">' +
+      '<span class="prompt">' + prefix + '</span>' +
+      str +
+      '</div></div>';
 
     $("#log").append(message);
   };
@@ -68,9 +80,10 @@ $(document).ready(function () {
   };
 
   function escapeHtml(str) {
-    str = str.replace(/&/, "&amp;");
-    str = str.replace(/</, "&lt;");
-    str = str.replace(/>/, "&gt;");
+    str = str.replace(/&/g, "&amp;");
+    str = str.replace(/</g, "&lt;");
+    str = str.replace(/>/g, "&gt;");
+    str = str.replace(/\n/g, "<br>");
 
     return str;
   };

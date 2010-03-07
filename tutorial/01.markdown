@@ -1,0 +1,2 @@
+In this tutorial we will design a simple clone of Twitter using Redis
+as its database.  The twitter clone will be structurally simple.

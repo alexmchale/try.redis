@@ -8,6 +8,7 @@ require "json"
 require "redis"
 require "shellwords"
 require "logger"
+require "rdiscount"
 
 # We want all commands to go directly to redis, bypassing any
 # of the different formatting that redis-rb will do.
@@ -86,10 +87,6 @@ module NamespaceTools
 
       # TODO implement support for the SORT command
 
-    else
-
-      raise "Invalid command."
-
     end
   end
 
@@ -136,10 +133,14 @@ class TryRedis < Sinatra::Base
 
   include NamespaceTools
 
-  def internal_command(command, args)
+  def internal_command(command, *args)
     case command.downcase
-    when "namespace" then namespace
-    when "help"      then help *args
+    when "namespace"     then namespace
+    when "help"          then help args.first
+    when "tutorial"      then tutorial :reset
+    when /prev|previous/ then tutorial :previous
+    when "next"          then tutorial :next
+    when /^t(\d+)/       then tutorial $1
     end
   end
 
@@ -155,7 +156,7 @@ class TryRedis < Sinatra::Base
 
     # Test if the command is an internal TryRedis command.
     internal_result = internal_command(*argv)
-    return { response: internal_result } if internal_result
+    return { notification: internal_result } if internal_result
 
     begin
       { response: execute_redis(argv) }
@@ -172,6 +173,9 @@ class TryRedis < Sinatra::Base
     # Apply the current namespace to any fields that need it.
     argv = namespace_input(namespace, *argv)
 
+    # Issue the default help text if the command was not recognized.
+    raise "I'm sorry, I don't recognize that command.  #{help}" unless argv
+
     # Fix up any commands that need fixing.
     result = redis.send(*argv)
 
@@ -181,5 +185,50 @@ class TryRedis < Sinatra::Base
 
   def redis
     $redis ||= Redis.new :logger => Logger.new(STDOUT)
+  end
+
+  def help(keyword = "")
+    helpdocs[keyword.to_s.downcase]
+  end
+
+  def helpdocs
+    return @helpdocs if @helpdocs
+
+    raw_docs =
+      Dir["redis-doc/*.markdown"].map do |filename|
+        command = filename.scan(/redis-doc\/(.*).markdown/).first.first
+        doc = RDiscount.new(File.read(filename)).to_html
+
+        [ command, doc ]
+      end
+
+    cmds = raw_docs.map {|c, d| c.upcase}.sort.join(", ")
+    raw_docs << [ "", "Please type HELP for one of these commands: " + cmds ]
+
+    @helpdocs ||= Hash[*raw_docs.flatten]
+  end
+
+  def tutorial(index)
+    case index
+    when :reset
+      tutorial 1
+    when :previous
+      tutorial session[:tutorial].to_i - 1
+    when :next
+      tutorial session[:tutorial].to_i + 1
+    else
+      index = index.to_i
+      index = 0 unless tutorialdocs[index]
+
+      session[:tutorial] = index
+      tutorialdocs[index]
+    end
+  end
+
+  def tutorialdocs
+    @tutorialdocs ||=
+      Dir["tutorial/*.markdown"].sort.map do |filename|
+        RDiscount.new(File.read(filename)).to_html
+      end
   end
 end
