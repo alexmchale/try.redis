@@ -221,7 +221,13 @@ class TryRedis < Sinatra::Base
       index = 0 unless tutorialdocs[index]
 
       session[:tutorial] = index
-      tutorialdocs[index]
+      doc = tutorialdocs[index]
+
+      if (1 ... tutorialdocs.count - 1).include? index
+        doc += '<p class="tutorial_next">Type NEXT to continue the tutorial.</p>'
+      end
+
+      doc
     end
   end
 
