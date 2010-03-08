@@ -8,27 +8,7 @@ $(document).ready(function () {
     if (event.keyCode == 13) {
       var text = $("#input").val();
 
-      history.push(text);
-      historyCursor = history.length;
-
-      append(text, "input", "> ");
-      scrollDown();
-
-      $("#input").val("");
-
-      jQuery.getJSON("eval", { command: text }, function (data) {
-        if (data.response !== undefined) {
-          append(JSON.stringify(data.response), "response");
-        } else if (data.error !== undefined) {
-          append(data.error, "error");
-        } else if (data.notification !== undefined) {
-          append(data.notification, "notification", "", true);
-        } else {
-          append("Invalid response from TRY-REDIS server.", "error");
-        }
-
-        scrollDown();
-      });
+      submitCommand(text);
 
       return false;
     } else if (event.keyCode == 38) {
@@ -54,6 +34,32 @@ $(document).ready(function () {
   $("#toolbar").slideDown(500, function () {
     $("#input").focus();
   });
+
+  function submitCommand(text, dontClearInput) {
+    history.push(text);
+    historyCursor = history.length;
+
+    append(text, "input", "> ");
+    scrollDown();
+
+    if (!dontClearInput) {
+      $("#input").val("");
+    }
+
+    jQuery.getJSON("eval", { command: text }, function (data) {
+      if (data.response !== undefined) {
+        append(JSON.stringify(data.response), "response");
+      } else if (data.error !== undefined) {
+        append(data.error, "error");
+      } else if (data.notification !== undefined) {
+        append(data.notification, "notification", "", true);
+      } else {
+        append("Invalid response from TRY-REDIS server.", "error");
+      }
+
+      scrollDown();
+    });
+  };
 
   function append(str, klass, prefix, isHtml) {
     if (prefix === undefined) {
