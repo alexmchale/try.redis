@@ -1,2 +1,12 @@
-In this tutorial we will design a simple clone of Twitter using Redis
-as its database.  The twitter clone will be structurally simple.
+Redis is what is called a key-value store, often referred to as a NoSQL
+database. The essence of a key-value store is the ability to store some data,
+called a value, inside a key. This data can later be retrieved only if we know
+the exact key used to store it. We can use the command SET to store the value
+"bar" at key foo:
+
+    SET server:name "fido"
+
+Redis will store our data permanently, so we can later ask for "What is the
+value stored at key foo?" and Redis will reply with "bar":
+
+    GET server:name => "fido"
