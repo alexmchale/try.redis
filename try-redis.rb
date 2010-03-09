@@ -9,6 +9,7 @@ require "redis"
 require "shellwords"
 require "logger"
 require "rdiscount"
+require "andand"
 
 # We want all commands to go directly to redis, bypassing any
 # of the different formatting that redis-rb will do.
@@ -25,7 +26,7 @@ module NamespaceTools
          "llen", "lrange", "ltrim", "lindex", "lset", "lrem", "lpop", "rpop",
          "sadd", "srem", "spop", "scard", "sismember", "smembers", "srandmember",
          "zadd", "zrem", "zincrby", "zrange", "zrevrange", "zrangebyscore",
-         "zcard", "zscore", "zremrangebyscore", "sort", "expire", "expireat"
+         "zcard", "zscore", "zremrangebyscore", "expire", "expireat"
 
       # Only the first argument is a key.
 
@@ -85,7 +86,28 @@ module NamespaceTools
 
     when "sort"
 
-      # TODO implement support for the SORT command
+      return [] if args.count == 0
+
+      key = add_namespace(ns, args.shift)
+      parms = {}
+
+      while keyword = args.shift.andand.downcase
+        case keyword
+        when "by", "get", "store"
+          k = keyword.intern
+          v = add_namespace(ns, args.shift)
+
+          parms[k] = v
+        when "limit"
+          parms[:limit] = [ args.shift.to_i, args.shift.to_i ]
+        when "asc", "desc", "alpha"
+          parms[:order].andand << " "
+          parms[:order] ||= ""
+          parms[:order] << keyword
+        end
+      end
+
+      [ command, key, parms ]
 
     end
   end
