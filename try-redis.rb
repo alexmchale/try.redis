@@ -172,6 +172,8 @@ class TryRedis < Sinatra::Base
       begin
         Shellwords.shellwords(command.to_s)
       rescue Exception => e
+        STDERR.puts e.message
+        e.backtrace.each {|bt| STDERR.puts bt}
         return { error: e.message }
       end
     return { error: "No command received." } unless argv[0]
@@ -183,6 +185,8 @@ class TryRedis < Sinatra::Base
     begin
       { response: execute_redis(argv) }
     rescue Exception => e
+      STDERR.puts e.message
+      e.backtrace.each {|bt| STDERR.puts bt}
       { error: e.message }
     end
   end
