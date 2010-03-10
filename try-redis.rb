@@ -80,10 +80,6 @@ module NamespaceTools
 
       [ command, hash2 ]
 
-    when "keys"
-
-      args
-
     when "sort"
 
       return [] if args.count == 0
