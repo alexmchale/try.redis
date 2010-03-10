@@ -20,4 +20,4 @@ parameter means to retrieve all elements in the list.
 
     LRANGE friends 0 -1 => ["Sam","Tom","Bob"]
     LRANGE friends 0 1 => ["Sam","Tom"]
-    LRANGE friends 0 2 => ["Tom","Bob"]
+    LRANGE friends 1 2 => ["Tom","Bob"]
