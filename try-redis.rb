@@ -192,6 +192,9 @@ class TryRedis < Sinatra::Base
   end
 
   def execute_redis(argv)
+    # Connect to the Redis server.
+    redis = Redis.new(:logger => Logger.new(STDOUT))
+
     # Apply the current namespace to any fields that need it.
     argv = namespace_input(namespace, *argv)
 
@@ -201,12 +204,11 @@ class TryRedis < Sinatra::Base
     # Fix up any commands that need fixing.
     result = redis.send(*argv)
 
+    # Disconnect from the server.
+    redis.quit
+
     # Remove the namespace from any commands that return a key.
     denamespace_output namespace, argv.first, result
-  end
-
-  def redis
-    $redis ||= Redis.new :logger => Logger.new(STDOUT)
   end
 
   def help(keyword = "")
