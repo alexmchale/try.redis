@@ -10,6 +10,7 @@ require "shellwords"
 require "logger"
 require "rdiscount"
 require "andand"
+require "fileutils"
 
 # We want all commands to go directly to redis, bypassing any
 # of the different formatting that redis-rb will do.
@@ -163,32 +164,63 @@ class TryRedis < Sinatra::Base
   end
 
   def evaluate_redis(command)
+    session_log "\n### #{command} ###"
+
     # Attempt to parse the given command string.
     argv =
       begin
         Shellwords.shellwords(command.to_s)
       rescue Exception => e
-        STDERR.puts e.message
-        e.backtrace.each {|bt| STDERR.puts bt}
+        session_log e
+
         return { error: e.message }
       end
     return { error: "No command received." } unless argv[0]
 
     # Test if the command is an internal TryRedis command.
-    internal_result = internal_command(*argv)
-    return { notification: internal_result } if internal_result
+    if internal_result = internal_command(*argv)
+      session_log internal_result
+
+      return { notification: internal_result }
+    end
 
     begin
-      { response: execute_redis(argv) }
+      response = execute_redis(argv)
+      session_log response
+
+      { response: response }
     rescue Exception => e
-      STDERR.puts e.message
-      e.backtrace.each {|bt| STDERR.puts bt}
+      session_log e
+
       { error: e.message }
     end
   end
 
   def namespace
-    session[:namespace] ||= Digest::SHA1.hexdigest(rand(2 ** 256).to_s)
+    return session[:namespace] if session[:namespace]
+
+    Digest::SHA1.hexdigest(rand(2 ** 256).to_s).tap do |namespace|
+      session[:namespace] = namespace
+
+      session_log request.ip
+      session_log request.user_agent
+    end
+  end
+
+  def session_log(text, *args)
+    FileUtils.mkdir_p "log/sessions"
+
+    File.open("log/sessions/#{namespace}", "a") do |f|
+      case text
+      when Exception
+        f.printf "#{text.message}\n"
+        text.backtrace.andand.each {|s| f.printf "#{s}\n"}
+      when Array
+        text.each {|s| f.printf "#{s}\n"}
+      else
+        f.printf "#{text.to_s}\n", *args
+      end
+    end
   end
 
   def execute_redis(argv)
