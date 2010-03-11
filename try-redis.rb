@@ -204,11 +204,16 @@ class TryRedis < Sinatra::Base
     # Fix up any commands that need fixing.
     result = redis.send(*argv)
 
-    # Disconnect from the server.
-    redis.quit
-
     # Remove the namespace from any commands that return a key.
     denamespace_output namespace, argv.first, result
+  ensure
+    begin
+      # Disconnect from the server.
+      redis.quit
+    rescue Exception => e
+      STDERR.puts e.message
+      e.backtrace.each {|bt| STDERR.puts bt}
+    end
   end
 
   def help(keyword = "")
