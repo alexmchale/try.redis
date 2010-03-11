@@ -6,7 +6,7 @@ the exact key used to store it. We can use the command SET to store the value
 
     SET server:name "fido"
 
-Redis will store our data permanently, so we can later ask for "What is the
-value stored at key server:name?" and Redis will reply with "fido":
+Redis will store our data permanently, so we can later ask "What is the value
+stored at key server:name?" and Redis will reply with "fido":
 
     GET server:name => "fido"
