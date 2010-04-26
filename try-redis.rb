@@ -11,12 +11,6 @@ require "logger"
 require "rdiscount"
 require "andand"
 
-# We want all commands to go directly to redis, bypassing any
-# of the different formatting that redis-rb will do.
-class Redis
-  remove_method :set
-end
-
 module NamespaceTools
   def namespace_input(ns, command, *args)
     case command.to_s.downcase
