@@ -13,7 +13,9 @@ require "andand"
 
 module NamespaceTools
   def namespace_input(ns, command, *args)
-    case command.to_s.downcase
+    command = command.to_s.downcase
+
+    case command
 
     when "exists", "del", "type", "keys", "ttl", "set", "get", "getset",
          "setnx", "incr", "incrby", "decr", "decrby", "rpush", "lpush",
