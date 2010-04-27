@@ -53,7 +53,7 @@ module NamespaceTools
 
       result
 
-    when "mget", "rpoplpush", "sinter", "sunion", "sdiff"
+    when "mget", "rpoplpush", "sinter", "sunion", "sdiff", "info"
 
       # All arguments are keys.
 
