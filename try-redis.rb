@@ -20,7 +20,9 @@ module NamespaceTools
          "llen", "lrange", "ltrim", "lindex", "lset", "lrem", "lpop", "rpop",
          "sadd", "srem", "spop", "scard", "sismember", "smembers", "srandmember",
          "zadd", "zrem", "zincrby", "zrange", "zrevrange", "zrangebyscore",
-         "zcard", "zscore", "zremrangebyscore", "expire", "expireat"
+         "zcard", "zscore", "zremrangebyscore", "expire", "expireat", "hlen",
+         "hkeys", "hvals", "hgetall", "hset", "hget", "hincrby", "hexists",
+         "hdel", "hmset"
 
       # Only the first argument is a key.
 
@@ -36,7 +38,7 @@ module NamespaceTools
       result = [ command ]
 
       args.each_with_index do |arg, i|
-        result << (i == 0 || i == 1) ? add_namespace(ns, arg) : arg
+        result << ((i == 0 || i == 1) ? add_namespace(ns, arg) : arg)
       end
 
       result
@@ -48,7 +50,7 @@ module NamespaceTools
       result = [ command ]
 
       args.each_with_index do |arg, i|
-        result << (i != 0) ? add_namespace(ns, arg) : arg
+        result << ((i != 0) ? add_namespace(ns, arg) : arg)
       end
 
       result
