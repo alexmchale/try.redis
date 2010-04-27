@@ -2,7 +2,7 @@
 # HVALS key #
 # HGETALL key #
 
-**TIME COMPLEXITY:
+**TIME COMPLEXITY**:
 O(N), where N is the total number of entries
 
 **DESCRIPTION**:
