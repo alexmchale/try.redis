@@ -45,19 +45,8 @@ module NamespaceTools
 
       result
 
-    when "sinterstore", "sunionstore", "sdiffstore"
-
-      # All arguments except the first are keys.
-
-      result = [ command ]
-
-      args.each_with_index do |arg, i|
-        result << ((i != 0) ? add_namespace(ns, arg) : arg)
-      end
-
-      result
-
-    when "mget", "rpoplpush", "sinter", "sunion", "sdiff", "info"
+    when "mget", "rpoplpush", "sinter", "sunion", "sdiff", "info",
+         "sinterstore", "sunionstore", "sdiffstore"
 
       # All arguments are keys.
 
