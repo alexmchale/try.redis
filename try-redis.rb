@@ -17,6 +17,12 @@ module NamespaceTools
 
     case command
 
+    when "multi", "exec", "discard"
+
+      # No arguments.
+
+      [ command ]
+
     when "exists", "del", "type", "keys", "ttl", "set", "get", "getset",
          "setnx", "incr", "incrby", "decr", "decrby", "rpush", "lpush",
          "llen", "lrange", "ltrim", "lindex", "lset", "lrem", "lpop", "rpop",
@@ -179,20 +185,24 @@ class TryRedis < Sinatra::Base
   end
 
   def execute_redis(argv)
-    # Connect to the Redis server.
-    redis = Redis.new(:logger => Logger.new(STDOUT))
-
     # Apply the current namespace to any fields that need it.
     argv = namespace_input(namespace, *argv)
 
     # Issue the default help text if the command was not recognized.
-    raise "I'm sorry, I don't recognize that command.  #{help}" unless argv
+    raise "I'm sorry, I don't recognize that command.  #{help}" unless argv.kind_of? Array
 
-    # Fix up any commands that need fixing.
-    result = redis.send(*argv)
+    # Connect to the Redis server.
+    redis = Redis.new(:logger => Logger.new(STDOUT))
 
-    # Remove the namespace from any commands that return a key.
-    denamespace_output namespace, argv.first, result
+    if result = bypass(redis, argv)
+      result
+    else
+      # Send the command to Redis.
+      result = redis.send(*argv)
+
+      # Remove the namespace from any commands that return a key.
+      denamespace_output namespace, argv.first, result
+    end
   ensure
     begin
       # Disconnect from the server.
@@ -200,6 +210,33 @@ class TryRedis < Sinatra::Base
     rescue Exception => e
       STDERR.puts e.message
       e.backtrace.each {|bt| STDERR.puts bt}
+    end
+  end
+
+  def bypass(redis, argv)
+    queue = "transactions-#{namespace}"
+
+    if argv.first == "multi"
+      redis.del queue
+      redis.rpush queue, argv.to_json
+      return "OK"
+    elsif redis.llen(queue).to_i >= 1
+      redis.rpush queue, argv.to_json
+
+      if %w( discard exec ).include? argv.first
+        commands = redis.lrange(queue, 0, -1)
+        redis.del queue
+
+        return commands.map do |c|
+          # Send the command to Redis.
+          result = redis.send(*JSON.parse(c))
+
+          # Remove the namespace from any commands that return a key.
+          denamespace_output namespace, c.first, result
+        end.last
+      end
+
+      return "QUEUED"
     end
   end
 
