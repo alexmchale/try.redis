@@ -157,20 +157,20 @@ class TryRedis < Sinatra::Base
       rescue Exception => e
         STDERR.puts e.message
         e.backtrace.each {|bt| STDERR.puts bt}
-        return { error: e.message }
+        return { "error" => e.message }
       end
-    return { error: "No command received." } unless argv[0]
+    return { "error" => "No command received." } unless argv[0]
 
     # Test if the command is an internal TryRedis command.
     internal_result = internal_command(*argv)
-    return { notification: internal_result } if internal_result
+    return { "notification" => internal_result } if internal_result
 
     begin
-      { response: execute_redis(argv) }
+      { "response" => execute_redis(argv) }
     rescue Exception => e
       STDERR.puts e.message
       e.backtrace.each {|bt| STDERR.puts bt}
-      { error: e.message }
+      { "error" => e.message }
     end
   end
 
