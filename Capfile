@@ -8,7 +8,7 @@ set :domain, 'redis-db.com'
 set :application, 'try.redis'
 
 # the rest should be good
-set :repository,  "#{user}@#{domain}:~#{user}/src/#{application}"
+set :repository,  "git://github.com/alexmchale/try.redis.git"
 set :deploy_to, "/var/www/#{application}"
 set :deploy_via, :remote_cache
 set :scm, 'git'
