@@ -10,10 +10,8 @@ set :application, 'try.redis'
 # the rest should be good
 set :repository,  "git://github.com/alexmchale/try.redis.git"
 set :deploy_to, "/var/www/#{application}"
-set :deploy_via, :remote_cache
 set :scm, 'git'
 set :branch, 'master'
-set :git_shallow_clone, 1
 set :scm_verbose, true
 set :use_sudo, true
 
