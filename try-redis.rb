@@ -228,11 +228,13 @@ class TryRedis < Sinatra::Base
         redis.del queue
 
         return commands.map do |c|
+          cmd = JSON.parse(c)
+
           # Send the command to Redis.
-          result = redis.send(*JSON.parse(c))
+          result = redis.send(*cmd)
 
           # Remove the namespace from any commands that return a key.
-          denamespace_output namespace, c.first, result
+          denamespace_output namespace, cmd.first, result
         end.last
       end
 
