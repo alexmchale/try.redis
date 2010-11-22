@@ -52,7 +52,7 @@ module NamespaceTools
       result
 
     when "mget", "rpoplpush", "sinter", "sunion", "sdiff", "info",
-         "sinterstore", "sunionstore", "sdiffstore"
+         "sinterstore", "sunionstore", "sdiffstore", "rename", "renamenx"
 
       # All arguments are keys.
 
