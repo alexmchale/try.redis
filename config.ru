@@ -3,7 +3,7 @@ require 'bundler'
 
 Bundler.require
 
-require "try-redis.rb"
+require "./try-redis.rb"
 
 use Rack::Static, :urls => %w( /css /images /javascripts ), :root => "public"
 
