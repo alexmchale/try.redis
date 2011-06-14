@@ -1,9 +1,9 @@
 Redis can be told that a key should only exist for a certain length of time.
-This is accomplished with the [EXPIRE][] and [TTL][] commands.
+This is accomplished with the [EXPIRE](#help) and [TTL](#help) commands.
 
 <pre><code>
-    <a href="#SET%20resource:lock%20%22Redis Demo%22">SET resource:lock "Redis Demo"</a>
-    <a href="#EXPIRE%20resource:lock%20120">EXPIRE resource:lock 120</a>
+    <a href="#run">SET resource:lock "Redis Demo"</a>
+    <a href="#run">EXPIRE resource:lock 120</a>
 </code></pre>
 
 This causes the key *resource:lock* to be deleted in 120 seconds. You can test
@@ -11,20 +11,17 @@ how long a key will exist for with the [TTL][] command. It returns the number of
 seconds until it will be deleted.
 
 <pre><code>
-    <a href="#TTL%20resource:lock">TTL resource:lock</a> => 113
-    <a href="#TTL%20count">TTL count</a> => -1
+    <a href="#run">TTL resource:lock</a> => 113
+    <a href="#run">TTL count</a> => -1
 </code></pre>
 
 The *-1* for the [TTL] of the key *count* means that it will never expire. Note
-that if you *SET* a key, its *TTL* will reset.
+that if you [SET](#help) a key, its [TTL](#help) will reset.
 
 <pre><code>
-    <a href="#">SET resource:lock "Redis Demo 1"</a>
-    <a href="#">EXPIRE resource:lock 120</a>
-    <a href="#">TTL resource:lock => 119</a>
-    <a href="#">SET resource:lock "Redis Demo 2"</a>
-    <a href="#">TTL resource:lock</a> => -1
+    <a href="#run">SET resource:lock "Redis Demo 1"</a>
+    <a href="#run">EXPIRE resource:lock 120</a>
+    <a href="#run">TTL resource:lock => 119</a>
+    <a href="#run">SET resource:lock "Redis Demo 2"</a>
+    <a href="#run">TTL resource:lock</a> => -1
 </code></pre>
-
-[TTL][#help%20ttl]
-[EXPIRE][#help%20expire]

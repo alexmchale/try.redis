@@ -5,7 +5,7 @@ function submitCommand(text, dontClearInput) {
   historyValues.push(text);
   historyCursor = historyValues.length;
 
-  append("<a href=\"#" +  escape(text) + "\">" + escapeHtml(text)+"</a>", "input", escapeHtml("> "),true);
+  append("<a href=\"#run\">" + escapeHtml(text)+"</a>", "input", escapeHtml("> "),true);
   scrollDown();
 
   if (!dontClearInput) {
@@ -17,7 +17,6 @@ function submitCommand(text, dontClearInput) {
       append(JSON.stringify(data.response), "response");
     } else if (data.error !== undefined) {
       append(data.error, "error", "", true);
-      append("Please type <a href=\"#help\">HELP</a> for a list of commands.", "noti" )
     } else if (data.notification !== undefined) {
       append(data.notification, "notification", "", true);
     } else {
@@ -116,9 +115,23 @@ $(document).ready(function () {
   $("#toolbar").slideDown(500, function () {
     $("#input").focus();
   });
+  $("a[href='#help']").live('click',function () {
+    submitCommand("help " + $(this).text());
+    return false;
+  });
+  $("a[href='#run']").live('click',function () {
+    submitCommand($(this).text());
+    return false;
+  });
+  /*
+  $("a[data-run-command]").live('click',function () {
+    submitCommand($.data(this,'run-command'))
+    return false;
+  });
   $("a[href^='#']").live('click',function () {
     var cmd=unescape($(this).attr('href').substr(1));
     submitCommand(cmd);
     return false;
   });
+  */
 });
