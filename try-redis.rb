@@ -1,15 +1,7 @@
 #!/usr/bin/env ruby
 
-require "rubygems"
-require "sinatra/base"
-require "haml"
-require "sass"
-require "json"
-require "redis"
 require "shellwords"
 require "logger"
-require "rdiscount"
-require "andand"
 
 module NamespaceTools
   def namespace_input(ns, command, *args)
