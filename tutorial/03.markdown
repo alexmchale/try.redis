@@ -1,4 +1,4 @@
-There is something special about INCR.  Why do we provide such an operation if
+There is something special about [INCR](#help%20incr).  Why do we provide such an operation if
 we can do it ourself with a bit of code? After all it is as simple as:
 
     x = GET count
