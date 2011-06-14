@@ -255,7 +255,7 @@ class TryRedis < Sinatra::Base
         [ command, doc ]
       end
 
-    cmds = raw_docs.map {|c, d| "<a href=\"#help%20#{c.downcase}\">#{c.upcase}</a>"}.sort.join(", ")
+    cmds = raw_docs.map {|c, d| "<a href=\"#help #{c.downcase}\">#{c.upcase}</a>"}.sort.join(", ")
     raw_docs << [ "", "Please type HELP for one of these commands: " + cmds ]
 
     @helpdocs ||= Hash[*raw_docs.flatten]

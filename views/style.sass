@@ -3,9 +3,15 @@ $dark2: #262626
 $light1: #8C5B34
 $light2: #CC8139
 
+/* command links */
+a[href^='#']
+  text-decoration: none
+  /*font-weight: bold*/
+  font-family monospace
+
 a:hover
-  :background-color black
-  :color white
+  background-color: black
+  color: white
 
 div.nopad
   :padding 0px
@@ -49,6 +55,8 @@ div.nopad
   .input
     :font-weight bold
     :color $dark1
+    a
+      :color $dark1
   .response
     :font-weight bold
     :color $dark2

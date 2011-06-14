@@ -5,7 +5,7 @@ function submitCommand(text, dontClearInput) {
   historyValues.push(text);
   historyCursor = historyValues.length;
 
-  append(text, "input", "> ");
+  append("<a href=\"#" +  escape(text) + "\">" + escapeHtml(text)+"</a>", "input", escapeHtml("> "),true);
   scrollDown();
 
   if (!dontClearInput) {
@@ -117,7 +117,8 @@ $(document).ready(function () {
     $("#input").focus();
   });
   $("a[href^='#']").live('click',function () {
-    submitCommand($(this).attr('href').substr(1).replace('%20',' ').replace('_',' '));
+    var cmd=unescape($(this).attr('href').substr(1));
+    submitCommand(cmd);
     return false;
   });
 });
