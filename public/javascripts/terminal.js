@@ -16,7 +16,7 @@ function submitCommand(text, dontClearInput) {
     if (data.response !== undefined) {
       append(JSON.stringify(data.response), "response");
     } else if (data.error !== undefined) {
-      append(data.error, "error");
+      append(data.error, "error", "", true);
       append("Please type <a href=\"#help\">HELP</a> for a list of commands.", "noti" )
     } else if (data.notification !== undefined) {
       append(data.notification, "notification", "", true);
@@ -115,5 +115,9 @@ $(document).ready(function () {
 
   $("#toolbar").slideDown(500, function () {
     $("#input").focus();
+  });
+  $("a[href^='#']").live('click',function () {
+    submitCommand($(this).attr('href').substr(1).replace('%20',' ').replace('_',' '));
+    return false;
   });
 });
