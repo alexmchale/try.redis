@@ -1,15 +1,7 @@
 #!/usr/bin/env ruby
 
-require "rubygems"
-require "sinatra/base"
-require "haml"
-require "sass"
-require "json"
-require "redis"
 require "shellwords"
 require "logger"
-require "rdiscount"
-require "andand"
 
 module NamespaceTools
   def namespace_input(ns, command, *args)
@@ -133,6 +125,12 @@ module NamespaceTools
 end
 
 class TryRedis < Sinatra::Base
+  #see the logging for development mode
+  configure :development do
+    enable  :logging
+    disable :dump_errors
+  end
+
   enable :sessions
   enable :static
 
@@ -192,7 +190,7 @@ class TryRedis < Sinatra::Base
     raise "I'm sorry, I don't recognize that command.  #{help}" unless argv.kind_of? Array
 
     # Connect to the Redis server.
-    redis = Redis.new(:logger => Logger.new(STDOUT))
+    redis = Redis.new(:logger => Logger.new(File.join(File.dirname(__FILE__),'log','redis.log')))
 
     if result = bypass(redis, argv)
       result
@@ -252,12 +250,12 @@ class TryRedis < Sinatra::Base
     raw_docs =
       Dir["redis-doc/*.markdown"].map do |filename|
         command = filename.scan(/redis-doc\/(.*).markdown/).first.first
-        doc = RDiscount.new(File.read(filename)).to_html
+        doc = file_to_html(filename)
 
         [ command, doc ]
       end
 
-    cmds = raw_docs.map {|c, d| c.upcase}.sort.join(", ")
+    cmds = raw_docs.map {|c, d| "<a href=\"#help\">#{c.upcase}</a>"}.sort.join(", ")
     raw_docs << [ "", "Please type HELP for one of these commands: " + cmds ]
 
     @helpdocs ||= Hash[*raw_docs.flatten]
@@ -279,7 +277,7 @@ class TryRedis < Sinatra::Base
       doc = tutorialdocs[index]
 
       if (1 ... tutorialdocs.count - 1).include? index
-        doc += '<p class="tutorial_next">Type NEXT to continue the tutorial.</p>'
+        doc += '<p class="tutorial_next">Type <a href="#run">NEXT</a> to continue the tutorial.</p>'
       end
 
       doc
@@ -289,7 +287,11 @@ class TryRedis < Sinatra::Base
   def tutorialdocs
     @tutorialdocs ||=
       Dir["tutorial/*.markdown"].sort.map do |filename|
-        RDiscount.new(File.read(filename)).to_html
+        file_to_html(filename)
       end
+  end
+
+  def file_to_html(filename)
+    RDiscount.new(File.read(filename)).to_html
   end
 end

@@ -1,16 +1,24 @@
-*LLEN* returns the current length of the list.
+[LLEN](#help) returns the current length of the list.
 
-    LLEN friends => 3
+<pre><code>
+    <a href="#run">LLEN friends</a> => 3
+</code></pre>
 
-*LPOP* removes the first element from the list and returns it.
+[LPOP](#help) removes the first element from the list and returns it.
 
-    LPOP friends => "Sam"
+<pre><code>
+    <a href="#run">LPOP friends</a> => "Sam"
+</code></pre>
 
-*RPOP* removes the last element from the list and returns it.
+[RPOP](#help) removes the last element from the list and returns it.
 
-    RPOP friends => "Bob"
+<pre><code>
+    <a href="#run">RPOP friends</a> => "Bob"
+</code></pre>
 
 Note that the list now only has one element:
 
-    LLEN friends => 1
-    LRANGE friends 0 -1 => ["Tom"]
+<pre><code>
+    <a href="#run">LLEN friends</a> => 1
+    <a href="#run">LRANGE friends 0 -1</a> => ["Tom"]
+</code></pre>

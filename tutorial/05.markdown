@@ -1,23 +1,29 @@
 Redis also supports several more complex data structures. The first one we'll
 look at is a list.  A list is a series of ordered values.  Some of the
-important commands for interacting with lists are *RPUSH*, *LPUSH*, *LLEN*,
-*LRANGE*, *LPOP*, and *RPOP*.  You can immediately begin working with a key as
+important commands for interacting with lists are [RPUSH](#help), [LPUSH](#help), [LLEN](#help),
+[LRANGE](#help), [LPOP](#help), and [RPOP](#help).  You can immediately begin working with a key as
 a list, as long as it doesn't already exist as a different type.
 
-*RPUSH* puts the new value at the end of the list.
+[RPUSH](#help) puts the new value at the end of the list.
 
-    RPUSH friends "Tom"
-    RPUSH friends "Bob"
+<pre><code>
+    <a href="#run">RPUSH friends "Tom"</a>
+    <a href="#run">RPUSH friends "Bob"</a>
+</code></pre>
 
-*LPUSH* puts the new value at the start of the list.
+[LPUSH](#help) puts the new value at the start of the list.
 
-    LPUSH friends "Sam"
+<pre><code>
+    <a href="#run">LPUSH friends "Sam"</a>
+</code></pre>
 
-*LRANGE* gives a subset of the list. It takes the index of the first element
+[LRANGE](#help) gives a subset of the list. It takes the index of the first element
 you want to retrieve as its first parameter and the index of the last element
 you want to retrieve as its second parameter. A value of -1 for the second
 parameter means to retrieve all elements in the list.
 
-    LRANGE friends 0 -1 => ["Sam","Tom","Bob"]
-    LRANGE friends 0 1 => ["Sam","Tom"]
-    LRANGE friends 1 2 => ["Tom","Bob"]
+<pre><code>
+    <a href="#run">LRANGE friends 0 -1</a> => ["Sam","Tom","Bob"]
+    <a href="#run">LRANGE friends 0 1</a> => ["Sam","Tom"]
+    <a href="#run">LRANGE friends 1 2</a> => ["Tom","Bob"]
+</code></pre>

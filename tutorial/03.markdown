@@ -1,4 +1,4 @@
-There is something special about INCR.  Why do we provide such an operation if
+There is something special about [INCR](#help).  Why do we provide such an operation if
 we can do it ourself with a bit of code? After all it is as simple as:
 
     x = GET count
@@ -16,6 +16,6 @@ accessing this key at the same time:
 
 We wanted the value to be 12, but instead it is 11! This is because
 incrementing the value in this way is not an atomic operation.  Calling the
-INCR command in Redis will prevent this from happening, because it *is* an
+[INCR](#help) command in Redis will prevent this from happening, because it *is* an
 atomic operation. Redis provides many of these atomic operations on different
 types of data.
