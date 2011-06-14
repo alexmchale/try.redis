@@ -250,7 +250,7 @@ class TryRedis < Sinatra::Base
     raw_docs =
       Dir["redis-doc/*.markdown"].map do |filename|
         command = filename.scan(/redis-doc\/(.*).markdown/).first.first
-        doc = RDiscount.new(File.read(filename)).to_html
+        doc = file_to_html(filename)
 
         [ command, doc ]
       end
@@ -287,7 +287,11 @@ class TryRedis < Sinatra::Base
   def tutorialdocs
     @tutorialdocs ||=
       Dir["tutorial/*.markdown"].sort.map do |filename|
-        RDiscount.new(File.read(filename)).to_html
+        file_to_html(filename)
       end
+  end
+
+  def file_to_html(filename)
+    RDiscount.new(File.read(filename)).to_html
   end
 end
