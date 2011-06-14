@@ -7,7 +7,7 @@ This is accomplished with the [EXPIRE](#help) and [TTL](#help) commands.
 </code></pre>
 
 This causes the key *resource:lock* to be deleted in 120 seconds. You can test
-how long a key will exist for with the [TTL][] command. It returns the number of
+how long a key will exist for with the [TTL](#help) command. It returns the number of
 seconds until it will be deleted.
 
 <pre><code>
@@ -15,7 +15,7 @@ seconds until it will be deleted.
     <a href="#run">TTL count</a> => -1
 </code></pre>
 
-The *-1* for the [TTL] of the key *count* means that it will never expire. Note
+The *-1* for the [TTL](#help) of the key *count* means that it will never expire. Note
 that if you [SET](#help) a key, its [TTL](#help) will reset.
 
 <pre><code>

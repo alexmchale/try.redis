@@ -15,9 +15,9 @@ a list, as long as it doesn't already exist as a different type.
 
 <pre><code>
     <a href="#run">LPUSH friends "Sam"</a>
-</code><pre>
+</code></pre>
 
-[LRANGE]](#help) gives a subset of the list. It takes the index of the first element
+[LRANGE](#help) gives a subset of the list. It takes the index of the first element
 you want to retrieve as its first parameter and the index of the last element
 you want to retrieve as its second parameter. A value of -1 for the second
 parameter means to retrieve all elements in the list.
