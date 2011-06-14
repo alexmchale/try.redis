@@ -125,6 +125,12 @@ module NamespaceTools
 end
 
 class TryRedis < Sinatra::Base
+  #see the logging for development mode
+  configure :development do
+    enable  :logging
+    disable :dump_errors
+  end
+
   enable :sessions
   enable :static
 
@@ -184,7 +190,7 @@ class TryRedis < Sinatra::Base
     raise "I'm sorry, I don't recognize that command.  #{help}" unless argv.kind_of? Array
 
     # Connect to the Redis server.
-    redis = Redis.new(:logger => Logger.new(STDOUT))
+    redis = Redis.new(:logger => Logger.new(File.join(File.dirname(__FILE__),'log','redis.log')))
 
     if result = bypass(redis, argv)
       result
