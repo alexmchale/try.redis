@@ -1,7 +1,7 @@
-!dark1 = #595540
-!dark2 = #262626
-!light1 = #8C5B34
-!light2 = #CC8139
+$dark1: #595540
+$dark2: #262626
+$light1: #8C5B34
+$light2: #CC8139
 
 a:hover
   :background-color black
@@ -16,10 +16,10 @@ div.nopad
   :padding 0em
   :padding-top 0.25em
   :padding-bottom 0.25em
-  :border = "5px solid " + !dark1
+  :border 5px solid $dark1
   :text-align center
   :width 600px
-  :background-color = !light2
+  :background-color $light2
 
 #log
   :width 900px
@@ -28,10 +28,10 @@ div.nopad
   :margin auto
   :margin-top -5px
   :padding 1em 1em 1em 1em
-  :border = "5px solid " + !dark1
+  :border 5px solid $dark1
   :overflow auto
   :font-family monospace
-  :color = !dark2
+  :color $dark2
   :font-size 1.25em
   :word-wrap break-word
 
@@ -45,17 +45,17 @@ div.nopad
 
   span.prompt
     :font-weight normal
-    :color = !dark1
+    :color $dark1
   .input
     :font-weight bold
-    :color = !dark1
+    :color $dark1
   .response
     :font-weight bold
-    :color = !dark2
+    :color $dark2
   .notification
     :font-weight normal
-    :background-color = !dark2
-    :color = !light2
+    :background-color $dark2
+    :color $light2
     :font-family sans-serif
     :font-size 0.75em
     :padding 1em
@@ -92,10 +92,10 @@ div.nopad
     :padding 0.5em
     :width 100%
     :font-size 1.50em
-    :background-color = !light2
-    :color !dark2
+    :background-color $light2
+    :color $dark2
     :font-family monospace
-    :border = "5px solid " + !dark1
+    :border 5px solid $dark1
 
     :background-image url('/images/prompt.png')
     :background-repeat no-repeat
@@ -112,5 +112,5 @@ div.nopad
     :color peachpuff
 
 body
-  :background-color = !dark2
+  :background-color $dark2
 
