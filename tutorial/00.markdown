@@ -1,5 +1,5 @@
 Welcome to **Try Redis**, a demonstration of the
-[Redis](redis.io) database!
+[Redis](http://redis.io) database!
 
 Please type [TUTORIAL](#run) to begin a brief tutorial, [HELP](#run) to see a list of supported
 commands, or any valid Redis command to play with the database.
