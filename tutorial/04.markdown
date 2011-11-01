@@ -21,7 +21,7 @@ that if you [SET](#help) a key, its [TTL](#help) will reset.
 <pre><code>
     <a href="#run">SET resource:lock "Redis Demo 1"</a>
     <a href="#run">EXPIRE resource:lock 120</a>
-    <a href="#run">TTL resource:lock => 119</a>
+    <a href="#run">TTL resource:lock</a> => 119
     <a href="#run">SET resource:lock "Redis Demo 2"</a>
     <a href="#run">TTL resource:lock</a> => -1
 </code></pre>
