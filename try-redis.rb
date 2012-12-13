@@ -15,7 +15,7 @@ module NamespaceTools
 
       [ command ]
 
-    when "exists", "del", "type", "keys", "ttl", "set", "get", "getset",
+    when "exists", "type", "keys", "ttl", "set", "get", "getset",
          "setnx", "incr", "incrby", "decr", "decrby", "rpush", "lpush",
          "llen", "lrange", "ltrim", "lindex", "lset", "lrem", "lpop", "rpop",
          "sadd", "srem", "spop", "scard", "sismember", "smembers", "srandmember",
@@ -44,7 +44,7 @@ module NamespaceTools
       result
 
     when "mget", "rpoplpush", "sinter", "sunion", "sdiff", "info",
-         "sinterstore", "sunionstore", "sdiffstore", "rename", "renamenx"
+         "sinterstore", "sunionstore", "sdiffstore", "rename", "renamenx", "del"
 
       # All arguments are keys.
 
