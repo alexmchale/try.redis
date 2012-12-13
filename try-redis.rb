@@ -19,7 +19,7 @@ module NamespaceTools
          "setnx", "incr", "incrby", "decr", "decrby", "rpush", "lpush",
          "llen", "lrange", "ltrim", "lindex", "lset", "lrem", "lpop", "rpop",
          "sadd", "srem", "spop", "scard", "sismember", "smembers", "srandmember",
-         "zadd", "zrem", "zincrby", "zrange", "zrevrange", "zrangebyscore",
+         "zadd", "zrem", "zincrby",
          "zcard", "zscore", "zremrangebyscore", "expire", "expireat", "hlen",
          "hkeys", "hvals", "hgetall", "hset", "hget", "hincrby", "hexists",
          "hdel", "hmset"
@@ -81,6 +81,40 @@ module NamespaceTools
       end
 
       [ command, key, parms ]
+
+    when "zrange", "zrevrange"
+      # Only the first argument is a key, but special argument at the end.
+
+      head = add_namespace(ns, args.first)
+      tail = args[1..-1] || []
+
+      if tail.last.andand.downcase == "withscores"
+        tail.pop
+        options[:withscores] = true
+      end
+
+      [ command, head, *tail, options ]
+
+    when "zrangebyscore"
+
+      # Only the first argument is a key, but special arguments at the end.
+
+      head = add_namespace(ns, args.shift)
+
+      tail = []
+      options = {}
+      while keyword = args.shift
+        case keyword.downcase
+        when "limit"
+          options[:limit] = [ args.shift.to_i, args.shift.to_i ]
+        when "withscores"
+          options[:withscores] = true
+        else
+          tail << keyword
+        end
+      end
+
+      [ command, head, *tail, options ]
 
     end
   end
