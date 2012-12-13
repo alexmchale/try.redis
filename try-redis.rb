@@ -55,15 +55,7 @@ module NamespaceTools
     when "mset", "msetnx"
 
       # Every other argument is a key, starting with the first.
-
-      hash1 = Hash[*args]
-      hash2 = {}
-
-      hash1.each do |k, v|
-        hash2[add_namespace(ns, k)] = hash1.delete(k)
-      end
-
-      [ command, hash2 ]
+      [command] + args.each_with_index.map { |v,i| i%2==0 ?  add_namespace(ns, v) : v }
 
     when "sort"
 
