@@ -27,7 +27,7 @@ module NamespaceTools
       # Only the first argument is a key.
 
       head = add_namespace(ns, args.first)
-      tail = args[1, args.length - 1] || []
+      tail = args[1..-1]
 
       [ command, head, *tail ]
 
