@@ -2,6 +2,7 @@
 
 require "shellwords"
 require "logger"
+require "json"
 
 module NamespaceTools
   def namespace_input(ns, command, *args)
@@ -164,7 +165,16 @@ class TryRedis < Sinatra::Base
 
   get("/")          { haml :index }
   get("/style.css") { sass :style }
-  get("/eval")      { evaluate_redis(params["command"]).to_json }
+
+  get("/eval") do
+    if !params["sessionId"].nil? and params["sessionId"] != "null"
+      params["sessionId"].each do |k,v|
+        session[k] = v
+        env["rack.session"][k] = v
+      end
+    end
+    evaluate_redis(params["command"]).merge(:sessionId => env["rack.session"]).to_json
+  end
 
   include NamespaceTools
 
