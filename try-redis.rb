@@ -91,6 +91,7 @@ module NamespaceTools
 
       head = add_namespace(ns, args.first)
       tail = args[1..-1] || []
+      options = {}
 
       if tail.last.andand.downcase == "withscores"
         tail.pop
