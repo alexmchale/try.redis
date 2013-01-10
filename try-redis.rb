@@ -4,6 +4,9 @@ require "shellwords"
 require "logger"
 require "json"
 
+REDIS_HOST = 'localhost' unless defined?(REDIS_HOST)
+REDIS_PORT = 6379 unless defined?(REDIS_PORT)
+
 module NamespaceTools
   def namespace_input(ns, command, *args)
     command = command.to_s.downcase
@@ -226,7 +229,7 @@ class TryRedis < Sinatra::Base
     raise "I'm sorry, I don't recognize that command.  #{help}" unless argv.kind_of? Array
 
     # Connect to the Redis server.
-    redis = Redis.new(:logger => Logger.new(File.join(File.dirname(__FILE__),'log','redis.log')))
+    redis = Redis.new(:host => REDIS_HOST, :port => REDIS_PORT, :logger => Logger.new(File.join(File.dirname(__FILE__),'log','redis.log')))
 
     if result = bypass(redis, argv)
       result
