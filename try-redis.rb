@@ -175,13 +175,13 @@ class TryRedis < Sinatra::Base
   get("/style.css") { sass :style }
 
   get("/eval") do
-    if !params["sessionId"].nil? and params["sessionId"] != "null"
-      params["sessionId"].each do |k,v|
-        session[k] = v
-        env["rack.session"][k] = v
-      end
+    if !params["session_id"].nil? && params["session_id"] != "null"
+      @session_id = params["session_id"].to_s
+    else
+      @session_id = session["session_id"].to_s
     end
-    evaluate_redis(params["command"]).merge(:sessionId => env["rack.session"]).to_json
+
+    evaluate_redis(params["command"]).merge(:session_id => @session_id).to_json
   end
 
   include NamespaceTools
@@ -223,7 +223,7 @@ class TryRedis < Sinatra::Base
   end
 
   def namespace
-    session[:namespace] ||= Digest::SHA1.hexdigest(rand(2 ** 256).to_s)
+    @session_id
   end
 
   def execute_redis(argv)
