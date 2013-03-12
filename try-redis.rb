@@ -33,7 +33,11 @@ module NamespaceTools
       head = add_namespace(ns, args.first)
       tail = args[1..-1]
 
-      [ command, head, *tail ]
+      if ["zadd", "sadd", "zrem", "srem"].include?(command)
+        [ command, head, tail ]
+      else
+        [ command, head, *tail ]
+      end
 
     when "smove"
 
