@@ -1,10 +1,10 @@
 source :rubygems
 
-gem 'sinatra', '~> 1.2.6', :require => 'sinatra/base'
-gem 'haml', '~> 3.1.2'
-gem 'sass', '~>3.1.2'
-gem 'json', '~>1.5.1'
-gem 'redis', '~>2.2.1'
-gem 'rdiscount', '~>1.6.8'
-gem 'andand', '~>1.3.1'
+gem 'sinatra', '~> 1.3.5', :require => 'sinatra/base'
+gem 'haml', '~> 4.0.0'
+gem 'sass', '~>3.2.7'
+gem 'json', '~>1.7.7'
+gem 'redis', '~>3.0.3'
+gem 'rdiscount', '~>2.0.7'
+gem 'andand', '~>1.3.3'
 gem 'puma'

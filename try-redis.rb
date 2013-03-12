@@ -165,7 +165,7 @@ class TryRedis < Sinatra::Base
   enable :sessions
   enable :static
 
-  set :public, "public"
+  set :public_folder, "public"
 
   get("/")          { haml :index }
   get("/style.css") { sass :style }
