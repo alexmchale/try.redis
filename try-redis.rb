@@ -26,7 +26,7 @@ module NamespaceTools
          "zadd", "zrem", "zincrby",
          "zcard", "zscore", "zremrangebyscore", "expire", "expireat", "hlen",
          "hkeys", "hvals", "hgetall", "hset", "hget", "hincrby", "hexists",
-         "hdel", "hmset"
+         "hdel", "hmset", "append"
 
       # Only the first argument is a key.
 
@@ -130,13 +130,10 @@ module NamespaceTools
 
   def denamespace_output(namespace, command, result)
     case command.to_s.downcase
-
     when "keys"
       remove_namespace namespace, result
-
     else
       result
-
     end
   end
 
