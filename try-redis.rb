@@ -4,157 +4,10 @@ require "shellwords"
 require "logger"
 require "json"
 
+require_relative "namespace_tools"
+
 REDIS_HOST = 'localhost' unless defined?(REDIS_HOST)
 REDIS_PORT = 6379 unless defined?(REDIS_PORT)
-
-module NamespaceTools
-  def namespace_input(ns, command, *args)
-    command = command.to_s.downcase
-
-    case command
-
-    when "multi", "exec", "discard"
-
-      # No arguments.
-
-      [ command ]
-
-    when "exists", "type", "keys", "ttl", "set", "get", "getset",
-         "setnx", "incr", "incrby", "decr", "decrby", "rpush", "lpush",
-         "llen", "lrange", "ltrim", "lindex", "lset", "lrem", "lpop", "rpop",
-         "sadd", "srem", "spop", "scard", "sismember", "smembers", "srandmember",
-         "zadd", "zrem", "zincrby",
-         "zcard", "zscore", "zremrangebyscore", "expire", "expireat", "hlen",
-         "hkeys", "hvals", "hgetall", "hset", "hget", "hincrby", "hexists",
-         "hdel", "hmset", "append"
-
-      # Only the first argument is a key.
-
-      head = add_namespace(ns, args.first)
-      tail = args[1..-1]
-
-      if ["zadd", "sadd", "zrem", "srem"].include?(command)
-        [ command, head, tail ]
-      else
-        [ command, head, *tail ]
-      end
-
-    when "smove"
-
-      # The first two parmeters are keys.
-
-      result = [ command ]
-
-      args.each_with_index do |arg, i|
-        result << ((i == 0 || i == 1) ? add_namespace(ns, arg) : arg)
-      end
-
-      result
-
-    when "mget", "rpoplpush", "sinter", "sunion", "sdiff", "info",
-         "sinterstore", "sunionstore", "sdiffstore", "rename", "renamenx", "del"
-
-      # All arguments are keys.
-
-      keys = add_namespace(ns, args)
-
-      [ command, *keys ]
-
-    when "mset", "msetnx"
-
-      # Every other argument is a key, starting with the first.
-      [command] + args.each_with_index.map { |v,i| i%2==0 ?  add_namespace(ns, v) : v }
-
-    when "sort"
-
-      return [] if args.count == 0
-
-      key = add_namespace(ns, args.shift)
-      parms = {}
-
-      while keyword = args.shift.andand.downcase
-        case keyword
-        when "by", "get", "store"
-          k = keyword.intern
-          v = add_namespace(ns, args.shift)
-
-          parms[k] = v
-        when "limit"
-          parms[:limit] = [ args.shift.to_i, args.shift.to_i ]
-        when "asc", "desc", "alpha"
-          parms[:order].andand << " "
-          parms[:order] ||= ""
-          parms[:order] << keyword
-        end
-      end
-
-      [ command, key, parms ]
-
-    when "zrange", "zrevrange"
-      # Only the first argument is a key, but special argument at the end.
-
-      head = add_namespace(ns, args.first)
-      tail = args[1..-1] || []
-      options = {}
-
-      if tail.last.andand.downcase == "withscores"
-        tail.pop
-        options[:withscores] = true
-      end
-
-      [ command, head, *tail, options ]
-
-    when "zrangebyscore"
-
-      # Only the first argument is a key, but special arguments at the end.
-
-      head = add_namespace(ns, args.shift)
-
-      tail = []
-      options = {}
-      while keyword = args.shift
-        case keyword.downcase
-        when "limit"
-          options[:limit] = [ args.shift.to_i, args.shift.to_i ]
-        when "withscores"
-          options[:withscores] = true
-        else
-          tail << keyword
-        end
-      end
-
-      [ command, head, *tail, options ]
-
-    end
-  end
-
-  def denamespace_output(namespace, command, result)
-    case command.to_s.downcase
-    when "keys"
-      remove_namespace namespace, result
-    else
-      result
-    end
-  end
-
-  def add_namespace(namespace, key)
-    return key unless namespace
-
-    case key
-    when String then "#{namespace}:#{key}"
-    when Array  then key.map {|k| add_namespace(namespace, k)}
-    end
-  end
-
-  def remove_namespace(namespace, key)
-    return key unless namespace
-
-    case key
-    when String then key.gsub(/^#{namespace}:/, "")
-    when Array  then key.map {|k| remove_namespace(namespace, k)}
-    end
-  end
-end
 
 class TryRedis < Sinatra::Base
   #see the logging for development mode
@@ -231,16 +84,15 @@ class TryRedis < Sinatra::Base
     raise "I'm sorry, I don't recognize that command.  #{help}" unless argv.kind_of? Array
 
     # Connect to the Redis server.
-    redis = Redis.new(:host => REDIS_HOST, :port => REDIS_PORT, :logger => Logger.new(File.join(File.dirname(__FILE__),'log','redis.log')))
+    raw_redis = Redis.new(:host => REDIS_HOST, :port => REDIS_PORT, :logger => Logger.new(File.join(File.dirname(__FILE__),'log','redis.log')))
+    redis = Redis::Namespace.new namespace, redis: raw_redis
+
 
     if result = bypass(redis, argv)
       result
     else
       # Send the command to Redis.
       result = redis.send(*argv)
-
-      # Remove the namespace from any commands that return a key.
-      denamespace_output namespace, argv.first, result
     end
   ensure
     begin
@@ -271,9 +123,6 @@ class TryRedis < Sinatra::Base
 
           # Send the command to Redis.
           result = redis.send(*cmd)
-
-          # Remove the namespace from any commands that return a key.
-          denamespace_output namespace, cmd.first, result
         end.last
       end
 
