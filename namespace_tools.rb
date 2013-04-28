@@ -108,7 +108,11 @@ module NamespaceTools
   end
 
   # Transform redis response from ruby to redis-cli like format
-  def to_redis_output input
+  def to_redis_output input, cmd=nil
+    if cmd == 'info'
+      return info_output(input)
+    end
+
     case input
     when nil
       '(nil)'
@@ -148,5 +152,58 @@ module NamespaceTools
     else
       input
     end
+  end
+
+  INFO_SECTIONS = [
+    ["Server", [ "redis_version", "redis_git_sha1", "redis_git_dirty",
+                 "redis_build_id", "redis_mode", "os", "arch_bits",
+                 "multiplexing_api", "gcc_version", "process_id", "run_id",
+                 "tcp_port", "uptime_in_seconds", "uptime_in_days", "hz",
+                 "lru_clock" ]
+    ],
+    ["Clients", [ "connected_clients", "client_longest_output_list",
+                  "client_biggest_input_buf", "blocked_clients" ] ],
+    ["Memory", [ "used_memory", "used_memory_human", "used_memory_rss",
+                 "used_memory_peak", "used_memory_peak_human",
+                 "used_memory_lua", "mem_fragmentation_ratio", "mem_allocator"
+               ]
+    ],
+    ["Persistence", [ "loading", "rdb_changes_since_last_save",
+                      "rdb_bgsave_in_progress", "rdb_last_save_time",
+                      "rdb_last_bgsave_status", "rdb_last_bgsave_time_sec",
+                      "rdb_current_bgsave_time_sec", "aof_enabled",
+                      "aof_rewrite_in_progress", "aof_rewrite_scheduled",
+                      "aof_last_rewrite_time_sec",
+                      "aof_current_rewrite_time_sec", "aof_last_bgrewrite_status"
+                    ]
+    ],
+    ["Stats", [ "total_connections_received", "total_commands_processed",
+                "instantaneous_ops_per_sec", "rejected_connections",
+                "sync_full", "sync_partial_ok", "sync_partial_err",
+                "expired_keys", "evicted_keys", "keyspace_hits",
+                "keyspace_misses", "pubsub_channels", "pubsub_patterns",
+                "latest_fork_usec", "migrate_cached_sockets" ]
+    ],
+    ["Replication", [ "role", "connected_slaves", "master_repl_offset",
+                      "repl_backlog_active", "repl_backlog_size",
+                      "repl_backlog_first_byte_offset", "repl_backlog_histlen"
+                    ]
+    ],
+    ["CPU", [ "used_cpu_sys", "used_cpu_user", "used_cpu_sys_children",
+              "used_cpu_user_children" ]
+    ],
+    ["Cluster", [ "cluster_enabled" ] ],
+    ["Keyspace", ["db0"] ]
+  ]
+  def info_output input
+    msg = ""
+    INFO_SECTIONS.each do |section|
+      msg << "# #{section[0]}\n"
+      section[1].each do |opt|
+        msg << "#{opt}:#{input[opt]}\n"
+      end
+      msg << "\n"
+    end
+    msg.chomp
   end
 end
