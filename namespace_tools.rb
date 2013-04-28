@@ -144,7 +144,7 @@ module NamespaceTools
         str
       end
     when String, Numeric
-    "\"#{input}\""
+      "\"#{input}\""
     else
       input
     end
