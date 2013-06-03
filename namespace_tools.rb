@@ -206,4 +206,15 @@ module NamespaceTools
     end
     msg.chomp
   end
+
+  class ThrottledCommand < Exception; end
+  THROTTLED_COMMANDS = %w[ setbit setrange ]
+  THROTTLE_MAX_OFFSET = 8_000_000 # 1 MB = 8000000 bits
+  def throttle_commands argv
+    if THROTTLED_COMMANDS.include?(argv[0]) && argv[2].to_i > THROTTLE_MAX_OFFSET
+      raise ThrottledCommand, "This would result in a too big value. try.redis is only for testing so keep it small."
+    end
+
+    nil
+  end
 end

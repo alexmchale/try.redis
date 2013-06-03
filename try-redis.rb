@@ -83,6 +83,10 @@ class TryRedis < Sinatra::Base
     # Issue the default help text if the command was not recognized.
     raise "I'm sorry, I don't recognize that command.  #{help}" unless argv.kind_of? Array
 
+    if (err=throttle_commands(argv))
+      return err
+    end
+
     # Connect to the Redis server.
     raw_redis = Redis.new(:host => REDIS_HOST, :port => REDIS_PORT, :logger => Logger.new(File.join(File.dirname(__FILE__),'log','redis.log')))
     redis = Redis::Namespace.new namespace, redis: raw_redis
@@ -109,7 +113,7 @@ class TryRedis < Sinatra::Base
   ensure
     begin
       # Disconnect from the server.
-      redis.quit
+      redis.quit if redis
     rescue Exception => e
       STDERR.puts e.message
       e.backtrace.each {|bt| STDERR.puts bt}
