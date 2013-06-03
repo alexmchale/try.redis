@@ -1,5 +1,9 @@
 source :rubygems
 
+group :development do
+  gem 'pry'
+end
+
 gem 'sinatra', '~> 1.3.5', :require => 'sinatra/base'
 gem 'haml', '~> 4.0.0'
 gem 'sass', '~>3.2.7'
