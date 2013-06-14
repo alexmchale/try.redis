@@ -45,16 +45,16 @@ module NamespaceTools
         key    = args.shift
         params = {}
 
-        while keyword = args.shift.andand.downcase
-          case keyword
+        while keyword = args.shift
+          case keyword.downcase
           when "by", "get", "store"
             k = keyword.intern
             params[k] = args.shift
           when "limit"
             params[:limit] = [ args.shift.to_i, args.shift.to_i ]
           when "asc", "desc", "alpha"
-            params[:order].andand << " "
             params[:order] ||= ""
+            params[:order] << " "
             params[:order] << keyword
           end
         end
@@ -67,7 +67,7 @@ module NamespaceTools
         tail = args[1..-1] || []
         options = {}
 
-        if tail.last.andand.downcase == "withscores"
+        if tail.last && tail.last.downcase == "withscores"
           tail.pop
           options[:withscores] = true
         end
