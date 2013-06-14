@@ -1,6 +1,8 @@
 # encoding: utf-8
 
 module NamespaceTools
+  SYNTAX_ERROR = {error: "ERR Syntax error"}.freeze
+
   ALLOWED_COMMANDS = %w[
     append bitcount bitop echo getbit getrange hmget hsetnx incrbyfloat
     hincrbyfloat decr decrby del discard exec linsert lpushx persist pexpire
@@ -78,7 +80,7 @@ module NamespaceTools
 
         head = args.shift
 
-        tail = []
+        tail = [args.shift, args.shift]
         options = {}
         while keyword = args.shift
           case keyword.downcase
@@ -87,7 +89,7 @@ module NamespaceTools
           when "withscores"
             options[:withscores] = true
           else
-            tail << keyword
+            return SYNTAX_ERROR
           end
         end
 

@@ -80,6 +80,9 @@ class TryRedis < Sinatra::Base
     # Apply the current namespace to any fields that need it.
     argv = namespace_input(namespace, *argv)
 
+    # If command parser finds an error, return it
+    raise argv[:error] if argv.kind_of?(Hash) && argv[:error]
+
     # Issue the default help text if the command was not recognized.
     raise "I'm sorry, I don't recognize that command.  #{help}" unless argv.kind_of? Array
 
@@ -90,7 +93,6 @@ class TryRedis < Sinatra::Base
     # Connect to the Redis server.
     raw_redis = Redis.new(:host => REDIS_HOST, :port => REDIS_PORT, :logger => Logger.new(File.join(File.dirname(__FILE__),'log','redis.log')))
     redis = Redis::Namespace.new namespace, redis: raw_redis
-
 
     if result = bypass(redis, argv)
       result
