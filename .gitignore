@@ -2,4 +2,3 @@
 .bundle
 tmp/**
 log/**
-Gemfile.lock
