@@ -78,7 +78,7 @@ class TryRedis < Sinatra::Base
 
   def execute_redis(argv)
     # Apply the current namespace to any fields that need it.
-    argv = namespace_input(namespace, *argv)
+    argv = parse_command(namespace, *argv)
 
     # If command parser finds an error, return it
     raise argv[:error] if argv.kind_of?(Hash) && argv[:error]

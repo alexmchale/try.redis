@@ -30,7 +30,7 @@ module NamespaceTools
     zrange zrevrange zrangebyscore zinterstore zunionstore
   ]
 
-  def namespace_input(ns, command, *args)
+  def parse_command(ns, command, *args)
     command = command.to_s.downcase
 
     if ALLOWED_COMMANDS.include?(command)
