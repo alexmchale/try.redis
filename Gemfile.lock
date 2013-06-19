@@ -20,6 +20,8 @@ GEM
     redis-namespace (1.2.1)
       redis (~> 3.0.0)
     sass (3.2.7)
+    shotgun (0.9)
+      rack (>= 1.0)
     sinatra (1.3.6)
       rack (~> 1.4)
       rack-protection (~> 1.3)
@@ -39,4 +41,5 @@ DEPENDENCIES
   redis (~> 3.0.3)
   redis-namespace (~> 1.2.1)
   sass (~> 3.2.7)
+  shotgun
   sinatra (~> 1.3.5)

@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 group :development do
   gem 'pry'
+  gem 'shotgun'
 end
 
 gem 'sinatra', '~> 1.3.5', :require => 'sinatra/base'
