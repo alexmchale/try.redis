@@ -1,39 +1,28 @@
-load 'deploy' if respond_to?(:namespace) # cap2 differentiator
+load 'deploy'
+require 'bundler/capistrano'
 
 default_run_options[:pty] = true
 
 # be sure to change these
-set :user, 'alexmchale'
-set :domain, 'redis-db.com'
+set :user, 'tryredis'
+set :domain, 'rediger.net'
+set :port, 222
 set :application, 'try.redis'
-
-# the rest should be good
-set :repository,  "git://github.com/alexmchale/try.redis.git"
-set :deploy_to, "/var/www/#{application}"
 set :scm, 'git'
+set :repository,  'git://github.com/badboy/try.redis.git'
+
+set :deploy_to, "/home/tryredis/#{application}"
+set :deploy_via, :remote_cache
+set :keep_releases, 3
+
 set :branch, 'master'
-set :scm_verbose, true
-set :use_sudo, true
+set :use_sudo, false
 
 server domain, :app, :web
 
-namespace :deploy do
-  task :restart do
-    run "sudo /etc/init.d/apache2 restart"
-  end
-end
+set :default_environment, {
+  'REDIS_HOST' => 'localhost',
+  'REDIS_PORT' => '6380'
+}
 
-namespace :bundler do
-  task :create_symlink, :roles => :app do
-    shared_dir = File.join(shared_path, 'bundle')
-    release_dir = File.join(current_release, '.bundle')
-    run("mkdir -p #{shared_dir} && ln -s #{shared_dir} #{release_dir}")
-  end
-
-  task :bundle_new_release, :roles => :app do
-    bundler.create_symlink
-    run "cd #{release_path} && bundle install --without development test"
-  end
-end
-
-after 'deploy:update_code', 'bundler:bundle_new_release'
+load 'capistrano/puma'
