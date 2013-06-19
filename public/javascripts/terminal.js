@@ -100,14 +100,14 @@ $(document).ready(function () {
     } else if (event.keyCode == 38) {
       if (historyCursor > 0) {
         var text = historyValues[--historyCursor];
-        cursorToEnd($("#input"), escapeHtml(text));
+        cursorToEnd($("#input"), text);
       }
 
       return false;
     } else if (event.keyCode == 40) {
       if (historyCursor < historyValues.length - 1) {
         var text = historyValues[++historyCursor];
-        cursorToEnd($("#input"), escapeHtml(text));
+        cursorToEnd($("#input"), text);
       } else {
         historyCursor = historyValues.length
         $("#input").val("");
