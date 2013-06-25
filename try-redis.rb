@@ -107,7 +107,7 @@ class TryRedis < Sinatra::Base
           result = result.flatten
         end
 
-        result = to_redis_output result, argv[0]
+        result = to_redis_output result, argv[0], argv[1]
       end
 
       result

@@ -110,9 +110,15 @@ module NamespaceTools
   end
 
   # Transform redis response from ruby to redis-cli like format
-  def to_redis_output input, cmd=nil
+  #
+  # @param input [String] The value returned from redis-rb
+  # @param cmd [String] The command sent to redis
+  # @param arg [String] Additional argument (used only for 'info' command to specify section)
+  #
+  # @return [String] redis-cli like formatted string of the input data
+  def to_redis_output input, cmd=nil, arg=nil
     if cmd == 'info'
-      return info_output(input)
+      return info_output(input, arg)
     end
 
     case input
@@ -197,12 +203,29 @@ module NamespaceTools
     ["Cluster", [ "cluster_enabled" ] ],
     ["Keyspace", ["db0"] ]
   ]
-  def info_output input
+  def info_output input, section=nil
     msg = ""
+
+    # Show only data for subsection
+    if section
+      section_data = INFO_SECTIONS.find{|k,_| k.downcase == section }
+      if section_data
+        msg << "# #{section_data[0]}\n"
+        section_data[1].each do |opt|
+          msg << "#{opt}:#{input[opt]}\n" if input[opt]
+        end
+        msg << "\n"
+      else
+        msg = "\n\n"
+      end
+
+      return msg.chomp
+    end
+
     INFO_SECTIONS.each do |section|
       msg << "# #{section[0]}\n"
       section[1].each do |opt|
-        msg << "#{opt}:#{input[opt]}\n"
+        msg << "#{opt}:#{input[opt]}\n" if input[opt]
       end
       msg << "\n"
     end
