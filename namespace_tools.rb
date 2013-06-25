@@ -113,6 +113,31 @@ module NamespaceTools
         end
 
         return [ command, head, *tail, options ]
+      when "set"
+        head = args.shift
+
+        tail = [args.shift]
+        options = {}
+        while keyword = args.shift
+          case keyword.downcase
+          when "ex"
+            options[:ex] = args.shift
+          when "px"
+            options[:px] = args.shift
+          when "nx"
+            options[:nx] = true
+          when "xx"
+            options[:nx] = true
+          else
+            return SYNTAX_ERROR
+          end
+        end
+
+        if options.empty?
+          return [ command, head, *tail ]
+        else
+          return [ command, head, *tail, options ]
+        end
       end
 
       [command, *args]
