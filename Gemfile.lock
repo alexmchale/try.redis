@@ -10,7 +10,7 @@ GEM
       coderay (~> 1.0.5)
       method_source (~> 0.8)
       slop (~> 3.4)
-    puma (2.0.1)
+    puma (2.3.1)
       rack (>= 1.1, < 2.0)
     rack (1.5.2)
     rack-protection (1.5.0)
@@ -36,7 +36,7 @@ DEPENDENCIES
   haml (~> 4.0.0)
   json (~> 1.7.7)
   pry
-  puma
+  puma (~> 2.3.1)
   rdiscount (~> 2.0.7)
   redis (~> 3.0.3)
   redis-namespace (~> 1.2.1)
