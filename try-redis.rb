@@ -9,6 +9,15 @@ require_relative 'namespace_tools'
 REDIS_HOST = 'localhost' unless defined?(REDIS_HOST)
 REDIS_PORT = 6379 unless defined?(REDIS_PORT)
 
+def production?
+  ENV['RACK_ENV'] == 'production'
+end
+
+def development?
+  ENV['RACK_ENV'] == 'development'
+end
+
+
 class TryRedis < Sinatra::Base
   #see the logging for development mode
   configure :development do
@@ -66,8 +75,10 @@ class TryRedis < Sinatra::Base
     begin
       { "response" => execute_redis(argv) }
     rescue Exception => e
-      STDERR.puts e.message
-      e.backtrace.each {|bt| STDERR.puts bt}
+      if production?
+        STDERR.puts e.message
+        e.backtrace.each {|bt| STDERR.puts bt}
+      end
       { "error" => "(error) #{e.message}" }
     end
   end
