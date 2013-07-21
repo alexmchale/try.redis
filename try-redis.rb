@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
-require "shellwords"
-require "logger"
-require "json"
+require 'sinatra'
+require 'logger'
+require 'json'
 
-require_relative "namespace_tools"
+require_relative 'namespace_tools'
 
 REDIS_HOST = 'localhost' unless defined?(REDIS_HOST)
 REDIS_PORT = 6379 unless defined?(REDIS_PORT)
