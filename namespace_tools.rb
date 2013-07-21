@@ -2,6 +2,7 @@
 
 module NamespaceTools
   SYNTAX_ERROR = {error: "ERR Syntax error"}.freeze
+  ARGUMENT_ERROR = -> cmd { {error: "ERR wrong number of arguments for '#{cmd}' command"} }
 
   ALLOWED_COMMANDS = %w[
     append bitcount bitop echo getbit getrange hmget hsetnx incrbyfloat
@@ -35,6 +36,10 @@ module NamespaceTools
 
     if ALLOWED_COMMANDS.include?(command)
       case command
+      when "keys"
+        if args.size != 1
+          return ARGUMENT_ERROR[command]
+        end
       when "strlen"
         # Manually namespace this, redis-rb does not know it.
         key = add_namespace(ns, args.shift)
