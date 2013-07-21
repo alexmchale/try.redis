@@ -5,6 +5,10 @@ group :development do
   gem 'shotgun'
 end
 
+group :test do
+  gem 'minitest', '~> 5.0.6'
+end
+
 gem 'sinatra', '~> 1.3.5', :require => 'sinatra/base'
 gem 'haml', '~> 4.0.0'
 gem 'sass', '~>3.2.7'

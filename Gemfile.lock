@@ -6,6 +6,7 @@ GEM
       tilt
     json (1.7.7)
     method_source (0.8.1)
+    minitest (5.0.6)
     pry (0.9.12.2)
       coderay (~> 1.0.5)
       method_source (~> 0.8)
@@ -35,6 +36,7 @@ PLATFORMS
 DEPENDENCIES
   haml (~> 4.0.0)
   json (~> 1.7.7)
+  minitest (~> 5.0.6)
   pry
   puma (~> 2.3.1)
   rdiscount (~> 2.0.7)
