@@ -44,4 +44,17 @@ class TestNamespaceTools < Minitest::Test
       parse_command_equal exp, cmd
     end
   end
+
+  def test_shellsplit
+    to_test = [
+      [ ["set", "foo", "bar"], "set foo bar" ],
+      [ ["set", "b\\*", "bar"], "set b\\* bar" ],
+      [ ["set", "foo bar", "baz"], 'set "foo bar" baz' ],
+      [ ["set", "foo\\", "bar"], 'set foo\ bar' ],
+    ]
+
+    to_test.each do |exp, line|
+      assert_equal exp, NamespaceTools.shellsplit(line)
+    end
+  end
 end
