@@ -9,7 +9,7 @@ group :test do
   gem 'minitest', '~> 5.0.6'
 end
 
-gem 'sinatra', '~> 1.3.5', :require => 'sinatra/base'
+gem 'sinatra', '~> 1.4.3', :require => 'sinatra/base'
 gem 'haml', '~> 4.0.0'
 gem 'sass', '~>3.2.7'
 gem 'json', '~>1.7.7'
