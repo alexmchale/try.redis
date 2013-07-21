@@ -1,7 +1,4 @@
 require 'rubygems'
-require 'bundler'
-
-Bundler.require
 
 REDIS_HOST = ENV['REDIS_HOST']
 REDIS_PORT = ENV['REDIS_PORT']

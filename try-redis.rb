@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-require 'sinatra'
 require 'logger'
-require 'json'
+require 'bundler'
+Bundler.require
 
 require_relative 'namespace_tools'
 
