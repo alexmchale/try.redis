@@ -9,16 +9,18 @@ class TestNamespaceTools < Minitest::Test
     NamespaceTools.__send__ :extend, NamespaceTools
   end
 
+  # Pass 'ns' as namespace for all tests.
   def parse_command command, *args
     NamespaceTools::parse_command('ns', command, *args)
   end
 
-  def test_parse_command_unknown
-    assert_equal nil, parse_command('foo', 'bar')
-  end
-
+  # Helper function.
   def parse_command_equal expected, to_send
     assert_equal expected, parse_command(*to_send)
+  end
+
+  def test_parse_command_unknown
+    assert_equal nil, parse_command('foo', 'bar')
   end
 
   def test_parse_command_correct
