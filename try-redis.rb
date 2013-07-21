@@ -47,11 +47,34 @@ class TryRedis < Sinatra::Base
     end
   end
 
+  # Taken from shellwords.rb (in ruby stdlib)
+  # and modified to not remove escaping
+  #
+  # Example:
+  #
+  #   argv = shellsplit('set b\* foo')
+  #   argv #=> ["set", "b\\*", "foo"]
+  #
+  def shellsplit(line)
+    words = []
+    field = ''
+    line.scan(/\G\s*(?>([^\s\\\'\"]+)|'([^\']*)'|"((?:[^\"\\]|\\.)*)"|(\\\S?)|(\S))(\s|\z)?/m) do
+      |word, sq, dq, esc, garbage, sep|
+      raise ArgumentError, "Unmatched double quote: #{line.inspect}" if garbage
+      field << (word || sq || (dq && dq.gsub(/\\(.)/, '\\1')) || esc)
+      if sep
+        words << field
+        field = ''
+      end
+    end
+    words
+  end
+
   def evaluate_redis(command)
     # Attempt to parse the given command string.
     argv =
       begin
-        Shellwords.shellwords(command.to_s)
+        shellsplit(command.to_s)
       rescue Exception => e
         STDERR.puts e.message
         e.backtrace.each {|bt| STDERR.puts bt}
