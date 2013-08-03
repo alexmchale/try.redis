@@ -105,7 +105,7 @@ class TryRedis < Sinatra::Base
     raw_redis = Redis.new(:host => REDIS_HOST, :port => REDIS_PORT, :logger => Logger.new(File.join(File.dirname(__FILE__),'log','redis.log')))
     redis = Redis::Namespace.new namespace, redis: raw_redis
 
-    if (result = bypass(redis, argv))
+    if (result = bypass(redis, raw_redis, argv))
       result
     else
       # Send the command to Redis.
@@ -133,22 +133,22 @@ class TryRedis < Sinatra::Base
     end
   end
 
-  def bypass(redis, argv)
+  def bypass(redis, raw_redis, argv)
     queue = "transactions-#{namespace}"
 
     if argv.first == "multi"
-      redis.del queue
-      redis.rpush queue, 'multi'
+      raw_redis.del queue
+      raw_redis.rpush queue, 'multi'
       return "OK"
-    elsif redis.llen(queue).to_i >= 1
+    elsif raw_redis.llen(queue).to_i >= 1
       case argv.first
       when 'discard'
-        redis.del(queue)
+        raw_redis.del(queue)
         'OK'
       when 'exec'
         # First will always be multi
-        commands = redis.lrange(queue, 1, -1)
-        redis.del(queue)
+        commands = raw_redis.lrange(queue, 1, -1)
+        raw_redis.del(queue)
 
         redis.multi
         commands.map do |c|
@@ -158,7 +158,7 @@ class TryRedis < Sinatra::Base
 
         to_redis_output redis.exec, 'exec'
       else
-        redis.rpush queue, argv.to_json
+        raw_redis.rpush queue, argv.to_json
         'QUEUED'
       end
     elsif %w(discard exec).include? argv.first

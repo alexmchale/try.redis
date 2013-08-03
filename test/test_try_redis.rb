@@ -79,4 +79,15 @@ class TestTryRedis < MiniTest::Unit::TestCase
     command "namespace"
     response_was /{"notification":"[a-f0-9]{64}/
   end
+
+  def test_transaction_works_as_expected
+    command "multi"
+    response_was /{"response":"OK"/
+
+    command "ping"
+    response_was /{"response":"QUEUED"/
+
+    command "exec"
+    response_was /{"response":"1\) \\\"PONG\\\"/
+  end
 end
