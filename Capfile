@@ -20,9 +20,4 @@ set :use_sudo, false
 
 server domain, :app, :web
 
-set :default_environment, {
-  'REDIS_HOST' => 'localhost',
-  'REDIS_PORT' => '6380'
-}
-
 load 'capistrano/puma'
