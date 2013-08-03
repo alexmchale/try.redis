@@ -109,7 +109,7 @@ class TryRedis < Sinatra::Base
       result
     else
       # Send the command to Redis.
-      result = redis.send(*argv)
+      result = redis.public_send(*argv)
 
       if INTEGER_COMMANDS.include?(argv[0])
         result = "(integer) #{result}"
@@ -153,7 +153,7 @@ class TryRedis < Sinatra::Base
         redis.multi
         commands.map do |c|
           cmd = JSON.parse(c)
-          redis.send(*cmd)
+          redis.public_send(*cmd)
         end
 
         to_redis_output redis.exec, 'exec'
