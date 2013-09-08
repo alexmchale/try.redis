@@ -1,4 +1,4 @@
-#ZCOUNT *key min max*
+# ZCOUNT *key min max*
 
 **TIME COMPLEXITY**:
 O(log(N)+M) with N being the number of elements in the sorted set and M being the number of elements between min and max.
