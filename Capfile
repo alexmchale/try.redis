@@ -21,3 +21,12 @@ set :use_sudo, false
 server domain, :app, :web
 
 load 'capistrano/puma'
+
+namespace :deploy do
+  desc "Send a GET request to the homepage to check everything is working"
+  task :surf do
+    puts "GET request: %s" % run_locally("sleep 1; curl -si http://try.redis.io/ | head -1")
+  end
+end
+
+after "deploy", "deploy:surf"
