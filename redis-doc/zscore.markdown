@@ -1,4 +1,4 @@
-# ZSCORE *key element*
+# ZSCORE *key member*
 
 **TIME COMPLEXITY**:
 O(1)
@@ -9,6 +9,4 @@ specified element does not exist in the sorted set, or the key does not exist
 at all, a special 'nil' value is returned.
 
 **RETURN VALUE**:
-Bulk reply
-
-the score (a double precision floating point number) represented as string.
+Bulk reply, the score of *member* (a double precision floating point number), represented as string.
