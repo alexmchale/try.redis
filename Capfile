@@ -23,10 +23,14 @@ server domain, :app, :web
 load 'capistrano/puma'
 
 namespace :deploy do
+  task :wait do
+    sleep 3
+  end
   desc "Send a GET request to the homepage to check everything is working"
   task :surf do
-    puts "GET request: %s" % run_locally("sleep 1; curl -si http://try.redis.io/ | head -1")
+    puts "GET request: %s" % run_locally("curl -si http://try.redis.io/ | head -1")
   end
 end
 
+after "deploy", "deploy:wait"
 after "deploy", "deploy:surf"
