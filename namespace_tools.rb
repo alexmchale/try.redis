@@ -47,7 +47,7 @@ module NamespaceTools
       when "zadd", "sadd", "zrem", "srem"
         return [ command, args.shift, args ]
       when "sort"
-        return [] if args.empty?
+        return ARGUMENT_ERROR[command] if args.empty?
 
         key    = args.shift
         params = {}
