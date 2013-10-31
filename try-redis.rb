@@ -17,6 +17,10 @@ def development?
   ENV['RACK_ENV'] == 'development'
 end
 
+def test?
+  ENV['RACK_ENV'] == 'test'
+end
+
 
 class TryRedis < Sinatra::Base
   #see the logging for development mode
@@ -102,8 +106,7 @@ class TryRedis < Sinatra::Base
     end
 
     # Connect to the Redis server.
-    raw_redis = Redis.new(:host => REDIS_HOST, :port => REDIS_PORT, :logger => Logger.new(File.join(File.dirname(__FILE__),'log','redis.log')))
-    redis = Redis::Namespace.new namespace, redis: raw_redis
+    raw_redis, redis = redis_connect
 
     if (result = bypass(redis, raw_redis, argv))
       result
@@ -219,5 +222,23 @@ class TryRedis < Sinatra::Base
 
   def file_to_html(filename)
     RDiscount.new(File.read(filename)).to_html
+  end
+
+  def redis_connect
+    logger = if test?
+               nil
+             else
+               Logger.new(File.join(File.dirname(__FILE__),'log','redis.log'))
+             end
+
+    raw_redis = Redis.new(
+      :host => REDIS_HOST,
+      :port => REDIS_PORT,
+      :logger => logger
+    )
+
+    redis = Redis::Namespace.new namespace, redis: raw_redis
+
+    [raw_redis, redis]
   end
 end
