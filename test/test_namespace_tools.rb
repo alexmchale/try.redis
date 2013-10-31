@@ -1,7 +1,6 @@
 # encoding: utf-8
 
-require 'minitest/autorun'
-require_relative '../namespace_tools'
+require_relative 'helper'
 
 class TestNamespaceTools < Minitest::Test
   def setup
