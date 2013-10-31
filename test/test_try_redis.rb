@@ -2,7 +2,7 @@
 
 require_relative 'helper'
 
-class TestTryRedis < MiniTest::Unit::TestCase
+class TestTryRedis < MiniTest::Test
   include Rack::Test::Methods
 
   def setup
