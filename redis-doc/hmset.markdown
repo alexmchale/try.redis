@@ -1,13 +1,12 @@
-# HMSET key field1 value1 ... fieldN valueN #
+# HMSET key field value [field value ...]
 
-**TIME COMPLEXITY**:
-O(N) (with N being the number of fields)
+**TIME COMPLEXITY**
+O(N) where N is the number of fields being set.
 
-**DESCRIPTION**:
-Set the respective fields to the respective values. HMSET replaces old values
-with new values.
+**DESCRIPTION**
+Sets the specified fields to their respective values in the hash stored at
+`key`. This command overwrites any existing fields in the hash.  If `key` does
+not exist, a new key holding a hash is created.
 
-If key does not exist, a new key holding a hash is created.
-
-**RETURN VALUE**:
-Status code reply Always +OK because HMSET can't fail
+**RETURN VALUE**
+Status code reply

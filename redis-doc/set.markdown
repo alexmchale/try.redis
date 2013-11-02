@@ -4,9 +4,9 @@
 O(1)
 
 **DESCRIPTION**:
-Set the string value as value of the key. The string can't be longer than
-1073741824 bytes (1 GB).
+Set key to hold the string value. If key already holds a value, it is
+overwritten, regardless of its type. Any previous time to live associated with
+the key is discarded on successful SET operation.
 
 **RETURN VALUE**:
-Status code reply
-
+Status code reply: OK if SET was executed correctly.
