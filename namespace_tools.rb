@@ -122,8 +122,10 @@ module NamespaceTools
           case keyword.downcase
           when "ex"
             options[:ex] = args.shift
+            return SYNTAX_ERROR unless options[:ex]
           when "px"
             options[:px] = args.shift
+            return SYNTAX_ERROR unless options[:px]
           when "nx"
             options[:nx] = true
           when "xx"
@@ -189,9 +191,17 @@ module NamespaceTools
     when 'OK'
       'OK'
     when true
-      '(integer) 1'
+      if cmd == 'set'
+        return 'OK'
+      else
+        '(integer) 1'
+      end
     when false
-      '(integer) 0'
+      if cmd == 'set'
+        return '(nil)'
+      else
+        '(integer) 0'
+      end
     when Array
       if input.empty?
         "(empty list or set)"
