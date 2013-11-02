@@ -185,6 +185,10 @@ module NamespaceTools
       return info_output(input, arg)
     end
 
+    if cmd == 'ping' && input == 'PONG'
+      return "PONG"
+    end
+
     case input
     when nil
       '(nil)'

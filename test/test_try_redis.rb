@@ -133,4 +133,9 @@ class TestTryRedis < MiniTest::Test
     response_was /{"response":"\(nil\)"/
     assert_equal exp, @r.get("#{session}:#{key}")
   end
+
+  def test_ping
+    command "ping"
+    response_was /{"response":"PONG"/
+  end
 end
