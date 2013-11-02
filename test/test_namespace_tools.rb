@@ -56,4 +56,19 @@ class TestNamespaceTools < Minitest::Test
       assert_equal exp, NamespaceTools.shellsplit(line)
     end
   end
+
+  def test_parse_extended_set
+    to_test = [
+      [ ['set', 'foo', 'bar', {:ex => '1000'}], ['set', 'foo', 'bar', 'ex', '1000'] ],
+      [ ['set', 'foo', 'bar', {:px => '1000'}], ['set', 'foo', 'bar', 'px', '1000'] ],
+      [ ['set', 'foo', 'bar', {:nx => true}], ['set', 'foo', 'bar', 'nx'] ],
+      [ ['set', 'foo', 'bar', {:xx => true}], ['set', 'foo', 'bar', 'xx'] ],
+      [ ['set', 'foo', 'bar', {:ex => '1000', :xx => true}], ['set', 'foo', 'bar', 'xx', 'ex', '1000'] ],
+      [ ['set', 'foo', 'bar', {:px => '1000', :nx => true}], ['set', 'foo', 'bar', 'px', '1000', 'nx'] ],
+    ]
+
+    to_test.each do |exp, cmd|
+      parse_command_equal exp, cmd
+    end
+  end
 end

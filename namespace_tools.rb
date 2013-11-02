@@ -127,7 +127,7 @@ module NamespaceTools
           when "nx"
             options[:nx] = true
           when "xx"
-            options[:nx] = true
+            options[:xx] = true
           else
             return SYNTAX_ERROR
           end
