@@ -45,3 +45,11 @@ Rake::TestTask.new do |t|
   t.options = "-v"
   t.test_files = FileList["test/test_*.rb"]
 end
+
+GROUPED_HELP_FILE = "redis-doc/grouped_help.json"
+HELP_FILE         = "~/code/redis/src/help.h"
+
+desc "Generate grouped help file"
+task :generate_help do
+  sh "./utils/parse_help_groups.rb #{HELP_FILE} > #{GROUPED_HELP_FILE}"
+end

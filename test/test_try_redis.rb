@@ -57,6 +57,19 @@ class TestTryRedis < MiniTest::Test
   def test_eval_responds_to_help
     command "help"
     response_was /{"notification":"Please type HELP for one of these commands:/
+
+    command "help set"
+    response_was /{"notification":"<h1>SET key value/
+  end
+
+  def test_eval_responds_to_help_subsection
+    command "help @string"
+    response_was /{"notification":"<strong>/
+  end
+
+  def test_eval_responds_to_help_missing_subsection
+    command "help @foo"
+    response_was /{"notification":"No help for this group/
   end
 
   def test_eval_responds_to_tutorial

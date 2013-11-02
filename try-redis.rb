@@ -9,6 +9,9 @@ require_relative 'namespace_tools'
 REDIS_PORT = ENV['REDIS_PORT'] || 6379
 REDIS_HOST = ENV['REDIS_HOST'] || 'localhost'
 
+GROUPED_HELP_FILE = File.expand_path("redis-doc/grouped_help.json", File.dirname(__FILE__))
+GROUPED_HELP = JSON.parse File.read(GROUPED_HELP_FILE)
+
 def production?
   ENV['RACK_ENV'] == 'production'
 end
@@ -170,7 +173,15 @@ class TryRedis < Sinatra::Base
   end
 
   def help(keyword = "")
+    if keyword && keyword[0] == "@"
+      return grouped_help(keyword[1..-1].downcase)
+    end
+
     helpdocs[keyword.to_s.downcase]
+  end
+
+  def grouped_help group
+    GROUPED_HELP[group] || "No help for this group. Try one of #{GROUPED_HELP.keys*", "}."
   end
 
   def helpdocs
