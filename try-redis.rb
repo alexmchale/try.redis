@@ -6,8 +6,8 @@ Bundler.require
 
 require_relative 'namespace_tools'
 
-REDIS_HOST = 'localhost' unless defined?(REDIS_HOST)
-REDIS_PORT = 6379 unless defined?(REDIS_PORT)
+REDIS_PORT = ENV['REDIS_PORT'] || 6379
+REDIS_HOST = ENV['REDIS_HOST'] || 'localhost'
 
 def production?
   ENV['RACK_ENV'] == 'production'

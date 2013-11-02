@@ -6,7 +6,9 @@ class TestTryRedis < MiniTest::Test
   include Rack::Test::Methods
 
   def setup
-    r = Redis.new
+    port = ENV['REDIS_PORT'] || 6379
+    host = ENV['REDIS_HOST'] || 'localhost'
+    r = Redis.new host: host, port: port.to_i
     r.flushall
   end
 

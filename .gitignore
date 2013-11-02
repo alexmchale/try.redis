@@ -2,3 +2,4 @@
 .bundle
 tmp/**
 log/**
+test/db/stdout
