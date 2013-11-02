@@ -65,6 +65,9 @@ class TestNamespaceTools < Minitest::Test
       [ ['set', 'foo', 'bar', {:xx => true}], ['set', 'foo', 'bar', 'xx'] ],
       [ ['set', 'foo', 'bar', {:ex => '1000', :xx => true}], ['set', 'foo', 'bar', 'xx', 'ex', '1000'] ],
       [ ['set', 'foo', 'bar', {:px => '1000', :nx => true}], ['set', 'foo', 'bar', 'px', '1000', 'nx'] ],
+      [ ['set', 'foo', 'bar', {:px => '1000', :nx => true}], ['set', 'foo', 'bar', 'px', '1000', 'nx'] ],
+      [ {error: "ERR Syntax error"}, ['set', 'foo', 'bar', 'px'] ],
+      [ {error: "ERR Syntax error"}, ['set', 'foo', 'bar', 'ex'] ],
     ]
 
     to_test.each do |exp, cmd|

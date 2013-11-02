@@ -8,16 +8,18 @@ class TestTryRedis < MiniTest::Test
   def setup
     port = ENV['REDIS_PORT'] || 6379
     host = ENV['REDIS_HOST'] || 'localhost'
-    r = Redis.new host: host, port: port.to_i
-    r.flushall
+    @r = Redis.new host: host, port: port
+    @r.flushall
   end
 
   def app
     TryRedis
   end
 
-  def command arg
-    get "/eval?command=#{CGI.escape arg}"
+  def command arg, session_id=nil
+    url = "/eval?command=#{CGI.escape arg}"
+    url << "&session_id=#{session_id}" if session_id
+    get url
     assert last_response.ok?
   end
 
@@ -91,5 +93,44 @@ class TestTryRedis < MiniTest::Test
 
     command "exec"
     response_was /{"response":"1\) \\\"PONG\\\"/
+  end
+
+  def test_extended_set
+    session = "extend_set"
+
+    key = "foo"
+    val = "bar"
+    exp = "bar"
+    command "set #{key} #{val}", session
+    response_was /{"response":"OK"/
+    assert_equal exp, @r.get("#{session}:#{key}")
+
+    key = "foo"
+    val = "next-val"
+    exp = "bar"
+    command "set #{key} #{val} nx", session
+    response_was /{"response":"\(nil\)"/
+    assert_equal exp, @r.get("#{session}:#{key}")
+
+    key = "foo"
+    val = "next-val"
+    exp = "next-val"
+    command "set #{key} #{val} xx", session
+    response_was /{"response":"OK"/
+    assert_equal exp, @r.get("#{session}:#{key}")
+
+    key = "non-exist"
+    val = "bar"
+    exp = "bar"
+    command "set #{key} #{val} nx", session
+    response_was /{"response":"OK"/
+    assert_equal exp, @r.get("#{session}:#{key}")
+
+    key = "non-exist2"
+    val = "bar"
+    exp = nil
+    command "set #{key} #{val} xx", session
+    response_was /{"response":"\(nil\)"/
+    assert_equal exp, @r.get("#{session}:#{key}")
   end
 end
