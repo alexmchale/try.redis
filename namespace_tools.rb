@@ -77,8 +77,8 @@ module NamespaceTools
       when "hscan", "sscan", "zscan"
         return ARGUMENT_ERROR[command] if args.size < 2
 
-        key = args.shift
-        cursor, params = extract_scan_arguments(ns, args)
+        key = add_namespace(ns, args.shift)
+        cursor, params = extract_scan_arguments(nil, args)
 
         return [ command, key, cursor, params ]
       when "zrange", "zrevrange"
@@ -153,13 +153,13 @@ module NamespaceTools
     while keyword = args.shift
       case keyword.downcase
       when "match"
-        params[:match] = "#{ns}:#{args.shift}"
+        params[:match] = add_namespace(ns, args.shift)
       when "count"
         params[:count] = args.shift
       end
     end
 
-    params[:match] ||= "#{ns}:*"
+    params[:match] ||= "#{ns}:*" if ns
 
     [cursor, params]
   end
