@@ -153,6 +153,8 @@ class TestTryRedis < MiniTest::Test
   end
 
   def test_scan
+    return if redis_version < "2.7.105"
+
     session = "scan"
 
     @r.set "#{session}:foo", "bar"
@@ -161,6 +163,8 @@ class TestTryRedis < MiniTest::Test
   end
 
   def test_sscan
+    return if redis_version < "2.7.105"
+
     session = "sscan"
 
     @r.sadd "#{session}:foo", ["bar", "baz", "bam"]
@@ -169,6 +173,8 @@ class TestTryRedis < MiniTest::Test
   end
 
   def test_zscan
+    return if redis_version < "2.7.105"
+
     session = "zscan"
 
     @r.zadd "#{session}:foo", [0, "bar", 1, "baz", 2, "bam"]
@@ -177,6 +183,8 @@ class TestTryRedis < MiniTest::Test
   end
 
   def test_hscan
+    return if redis_version < "2.7.105"
+
     session = "hscan"
 
     @r.hmset "#{session}:foo", ["key0", "val0", "key1", "val1", "key2", "val2"]
