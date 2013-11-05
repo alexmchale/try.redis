@@ -15,7 +15,7 @@ module NamespaceTools
     sdiffstore set setnx sinter sinterstore sismember smembers smove sort spop
     srandmember srem sunion sunionstore ttl type zadd zcard zincrby zrange
     zrangebyscore zrem zremrangebyscore zrevrange zscore
-    scan
+    scan sscan hscan zscan
   ]
 
   # These are manually converted to integer output

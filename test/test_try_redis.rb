@@ -151,4 +151,36 @@ class TestTryRedis < MiniTest::Test
     command "ping"
     response_was /{"response":"PONG"/
   end
+
+  def test_scan
+    session = "scan"
+
+    @r.set "#{session}:foo", "bar"
+    command "scan 0", session
+    response_was /{"response":"1\) \\\"0\\\"\\n2\) 1\) \\\"scan:foo\\\"/
+  end
+
+  def test_sscan
+    session = "sscan"
+
+    @r.sadd "#{session}:foo", ["bar", "baz", "bam"]
+    command "sscan foo 0", session
+    response_was /{"response":"1\) \\\"0\\\"\\n2\) 1\) \\\"baz\\\"/
+  end
+
+  def test_zscan
+    session = "zscan"
+
+    @r.zadd "#{session}:foo", [0, "bar", 1, "baz", 2, "bam"]
+    command "zscan foo 0", session
+    response_was /{"response":"1\) \\\"0\\\"\\n2\) 1\) \\\"/
+  end
+
+  def test_hscan
+    session = "hscan"
+
+    @r.hmset "#{session}:foo", ["key0", "val0", "key1", "val1", "key2", "val2"]
+    command "hscan foo 0", session
+    response_was /{"response":"1\) \\\"0\\\"\\n2\) 1\) \\\"key/
+  end
 end
