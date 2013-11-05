@@ -77,6 +77,7 @@ module NamespaceTools
       when "hscan", "sscan", "zscan"
         return ARGUMENT_ERROR[command] if args.size < 2
 
+        # Explicit namespacing here as redis-namespace fails to do the proper thing
         key = add_namespace(ns, args.shift)
         cursor, params = extract_scan_arguments(nil, args)
 
