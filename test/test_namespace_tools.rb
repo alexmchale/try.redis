@@ -74,4 +74,20 @@ class TestNamespaceTools < Minitest::Test
       parse_command_equal exp, cmd
     end
   end
+
+  def test_parse_scan_family
+    to_test = [
+      [ ['scan', '0', {:match => 'ns:*'}], ['scan', '0'] ],
+      [ ['scan', '0', {:match => 'ns:foo*'}], ['scan', '0', 'match', 'foo*'] ],
+      [ ['hscan', 'ns:key', '0', {}], ['hscan', 'key', '0'] ],
+      [ ['sscan', 'ns:key', '0', {}], ['sscan', 'key', '0'] ],
+      [ ['zscan', 'ns:key', '0', {}], ['zscan', 'key', '0'] ],
+      [ ['zscan', 'ns:key', '0', {:match => 'foo'}], ['zscan', 'key', '0', 'match', 'foo'] ],
+      [ ['zscan', 'ns:key', '0', {:count => '5'}], ['zscan', 'key', '0', 'count', '5'] ],
+    ]
+
+    to_test.each do |exp, cmd|
+      parse_command_equal exp, cmd
+    end
+  end
 end
