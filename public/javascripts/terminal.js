@@ -1,6 +1,8 @@
 var historyValues = [];
 var historyCursor = 0;
 
+var sessionId = null;
+
 function submitCommand(text, dontClearInput) {
   historyValues.push(text);
   historyCursor = historyValues.length;
@@ -12,7 +14,10 @@ function submitCommand(text, dontClearInput) {
     $("#input").val("");
   }
 
-  jQuery.getJSON("eval", { command: text }, function (data) {
+  jQuery.getJSON("eval", { command: text, sessionId: sessionId }, function (data) {
+    if(data.sessionId !== undefined && data.sessionId !== sessionId) {
+      sessionId = data.sessionId
+    }
     if (data.response !== undefined) {
       append(JSON.stringify(data.response), "response");
     } else if (data.error !== undefined) {
