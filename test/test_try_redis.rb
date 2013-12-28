@@ -169,7 +169,7 @@ class TestTryRedis < MiniTest::Test
 
     @r.sadd "#{session}:foo", ["bar", "baz", "bam"]
     command "sscan foo 0", session
-    response_was /{"response":"1\) \\\"0\\\"\\n2\) 1\) \\\"baz\\\"/
+    response_was /{"response":"1\) \\\"0\\\"\\n2\) 1\) /
   end
 
   def test_zscan
