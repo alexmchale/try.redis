@@ -1,0 +1,12 @@
+Numerical values in hash fields are handled exactly the same as in simple strings
+and there are operations to increment this value in an atomic way.
+
+<pre><code>
+    <a href="#run">HSET user:1000 visits 10</a>
+    <a href="#run">HINCRBY user:1000 visits 1</a> => 11
+    <a href="#run">HINCRBY user:1000 visits 10</a> => 21
+    <a href="#run">HDEL user:1000 visits</a>
+    <a href="#run">HINCRBY user:1000 visits 1</a> => 1
+</code></pre>
+
+Check the [full list of Hash commands](http://redis.io/commands#hash) for more information.

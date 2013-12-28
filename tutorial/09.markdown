@@ -1,6 +1,9 @@
-The last data structure which Redis supports is the sorted set.  It is similar
-to a regular set, but now each value has an associated score.  This score is
-used to sort the elements in the set.
+Sets are a very handy data type, but as they are unsorted they don't work well
+for a number of problems.
+This is why Redis 1.2 introduced Sorted Sets.
+
+A sorted set is similar to a regular set, but now each value has an associated score.
+This score is used to sort the elements in the set.
 
 <pre></code>
     <a href="#run">ZADD hackers 1940 "Alan Kay"</a>

@@ -1,9 +1,31 @@
-That wraps up the *Try Redis* tutorial. Please feel free to goof around with
-this console as much as you'd like.
+Simple strings, sets and sorted sets already get a lot done but there is one more data type
+Redis can handle: Hashes.
 
-Check out the following links to continue learning about Redis.
+Hashes are maps between string fields and string values, so they are the
+perfect data type to represent objects (eg: A User with a number of fields like
+name, surname, age, and so forth):
 
-* [Redis Documentation](http://redis.io/documentation)
-* [Command Reference](http://redis.io/commands)
-* [Implement a Twitter Clone in Redis](http://redis.io/topics/twitter-clone)
-* [Introduction to Redis Data Types](http://redis.io/topics/data-types-intro)
+<pre></code>
+    <a href="#run">HSET user:1000 name "John Smith"</a>
+    <a href="#run">HSET user:1000 email "john.smith@example.com"</a>
+    <a href="#run">HSET user:1000 password "s3cret"</a>
+</code></pre>
+
+To get back the saved data use [HGETALL](#help):
+
+<pre></code>
+    <a href="#run">HGETALL user:1000</a>
+</code></pre>
+
+You can also set multiple fields at once:
+
+<pre></code>
+    <a href="#run">HMSET user:1001 name "Mary Jones" password "hidden" email "mjones@example.com"</a>
+</code></pre>
+
+If you only need a single field value that is possible as well:
+
+<pre></code>
+    <a href="#run">HGET user:1001 name</a> => "Mary Jones"
+</code></pre>
+
