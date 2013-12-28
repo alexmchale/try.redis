@@ -23,7 +23,7 @@ module NamespaceTools
     incr incrby decr decrby del ttl llen
     sadd zadd
     zremrangebyrank
-    hincrby
+    hincrby hdel
     lpush rpush lpushx rpushx lrem
   ]
 
