@@ -1,9 +1,8 @@
 # encoding: utf-8
 
 ENV['RACK_ENV'] = 'test'
-gem 'minitest'
-require 'minitest/autorun'
-require 'rack/test'
+require 'bundler'
+Bundler.require(:default, :test)
 
 # Taken from redis-rb
 class RedisVersion

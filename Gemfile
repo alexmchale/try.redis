@@ -6,8 +6,8 @@ group :development do
 end
 
 group :test do
-  gem 'minitest', '~> 5.0.6'
-  gem 'rack-test'
+  gem 'minitest', '~> 5.0.6', :require => 'minitest/autorun'
+  gem 'rack-test', :require => 'rack/test'
   gem 'rake'
 end
 
