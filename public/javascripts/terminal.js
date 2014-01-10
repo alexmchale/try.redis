@@ -53,7 +53,7 @@ function append(str, klass, prefix, isHtml) {
 };
 
 function scrollDown() {
-  $("#log").attr({ scrollTop: $("#log").attr("scrollHeight") });
+  $("#log").scrollTop($("#log").prop("scrollHeight"));
 };
 
 function escapeHtml(str) {
@@ -120,11 +120,11 @@ $(document).ready(function () {
   $("#toolbar").slideDown(500, function () {
     $("#input").focus();
   });
-  $("a[href='#help']").live('click',function () {
+  $(document).on('click', "a[href='#help']", function () {
     submitCommand("help " + $(this).text());
     return false;
   });
-  $("a[href='#run']").live('click',function () {
+  $(document).on('click', "a[href='#run']", function () {
     submitCommand($(this).text());
     return false;
   });
