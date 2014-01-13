@@ -42,7 +42,7 @@ class TryRedis < Sinatra::Base
   get("/style.css") { sass :style }
 
   get("/eval") do
-    if !params["session_id"].nil? && params["session_id"] != "null"
+    if parameter_set?("session_id")
       @session_id = params["session_id"].to_s
     else
       @session_id = session["session_id"].to_s
@@ -52,6 +52,12 @@ class TryRedis < Sinatra::Base
   end
 
   include NamespaceTools
+
+  def parameter_set? attr
+    !params["session_id"].nil? &&
+      !params[attr].empty? &&
+      params["session_id"] != "null"
+  end
 
   def internal_command(command, *args)
     case command.downcase

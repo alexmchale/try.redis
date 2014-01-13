@@ -191,4 +191,25 @@ class TestTryRedis < MiniTest::Test
     command "hscan foo 0", session
     response_was /{"response":"1\) \\\"0\\\"\\n2\) 1\) \\\"key/
   end
+
+  def test_command_sets_correct_key
+    session = "valid-session-id"
+    command "set bug issue-25", session
+
+    assert_equal "issue-25", @r.get("#{session}:bug")
+  end
+
+  def test_command_returns_new_session
+    command "set bug issue-25", "valid-session-id"
+    response_was /"session_id":"valid-session-id"/
+
+    command "set bug issue-25", nil
+    response_was /"session_id":".+"/
+
+    command "set bug issue-25", "null"
+    response_was /"session_id":".+"/
+
+    command "set bug issue-25", ""
+    response_was /"session_id":".+"/
+  end
 end
