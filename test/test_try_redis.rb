@@ -232,35 +232,35 @@ class TestTryRedis < MiniTest::Test
   def test_bitpos_empty
     @r.del "foo"
 
-    command_with_body "bitpos foo 0", response: /"0"/
+    command_with_body "bitpos foo 0", response: "(integer) 0"
 
-    command_with_body "bitpos foo 1", response: /"-1"/
+    command_with_body "bitpos foo 1", response: "(integer) -1"
   end
 
   def test_bitpos_notempty
     @r.set "foo", "\xff\xf0\x00"
-    command_with_body "bitpos foo 0", response: /"12"/
+    command_with_body "bitpos foo 0", response: "(integer) 12"
 
     @r.set "foo", "\x00\x0f\x00"
-    command_with_body "bitpos foo 1", response: /"12"/
+    command_with_body "bitpos foo 1", response: "(integer) 12"
   end
 
   def test_bitpos_with_positions
     @r.set "foo", "\xff\xff\xff"
 
-    command_with_body "bitpos foo 0", response: /"24"/
-    command_with_body "bitpos foo 0 0", response: /"24"/
-    command_with_body "bitpos foo 0 0 -1", response: /"-1"/
+    command_with_body "bitpos foo 0", response: "(integer) 24"
+    command_with_body "bitpos foo 0 0", response: "(integer) 24"
+    command_with_body "bitpos foo 0 0 -1", response: "(integer) -1"
   end
 
   def test_bitpos_one_intervals
     @r.set "foo", "\x00\xff\x00"
 
-    command_with_body "bitpos foo 1 0 -1", response: /"8"/
-    command_with_body "bitpos foo 1 1 -1", response: /"8"/
-    command_with_body "bitpos foo 1 2 -1", response: /"-1"/
-    command_with_body "bitpos foo 1 2 200", response: /"-1"/
-    command_with_body "bitpos foo 1 1 1", response: /"8"/
+    command_with_body "bitpos foo 1 0 -1", response: "(integer) 8"
+    command_with_body "bitpos foo 1 1 -1", response: "(integer) 8"
+    command_with_body "bitpos foo 1 2 -1", response: "(integer) -1"
+    command_with_body "bitpos foo 1 2 200", response: "(integer) -1"
+    command_with_body "bitpos foo 1 1 1", response: "(integer) 8"
   end
 
   def test_bitpos_invalid_arguments

@@ -26,6 +26,7 @@ module NamespaceTools
     zremrangebyrank
     hincrby hdel
     lpush rpush lpushx rpushx lrem
+    bitpos
   ]
 
   # These commands return a nested array in ruby, need to be flattened
