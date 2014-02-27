@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 group :development do
   gem 'pry'
-  gem 'shotgun'
+  gem 'sinatra-contrib', :require => 'sinatra/reloader'
 end
 
 group :test do
