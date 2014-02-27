@@ -169,43 +169,47 @@ class TestTryRedis < MiniTest::Test
   end
 
   def test_scan
-    return if redis_version < "2.7.105"
+    target_version "2.7.105" do
 
-    session = "scan"
+      session = "scan"
 
-    @r.set "#{session}:foo", "bar"
-    command "scan 0", session
-    body_was :response, /1\) \"0\"\n2\) 1\) \"scan:foo\"/
+      @r.set "#{session}:foo", "bar"
+      command "scan 0", session
+      body_was :response, /1\) \"0\"\n2\) 1\) \"scan:foo\"/
+    end
   end
 
   def test_sscan
-    return if redis_version < "2.7.105"
+    target_version "2.7.105" do
 
-    session = "sscan"
+      session = "sscan"
 
-    @r.sadd "#{session}:foo", ["bar", "baz", "bam"]
-    command "sscan foo 0", session
-    body_was :response, /1\) \"0\"\n2\) 1\) /
+      @r.sadd "#{session}:foo", ["bar", "baz", "bam"]
+      command "sscan foo 0", session
+      body_was :response, /1\) \"0\"\n2\) 1\) /
+    end
   end
 
   def test_zscan
-    return if redis_version < "2.7.105"
+    target_version "2.7.105" do
 
-    session = "zscan"
+      session = "zscan"
 
-    @r.zadd "#{session}:foo", [0, "bar", 1, "baz", 2, "bam"]
-    command "zscan foo 0", session
-    body_was :response, /1\) \"0\"\n2\) 1\) \"/
+      @r.zadd "#{session}:foo", [0, "bar", 1, "baz", 2, "bam"]
+      command "zscan foo 0", session
+      body_was :response, /1\) \"0\"\n2\) 1\) \"/
+    end
   end
 
   def test_hscan
-    return if redis_version < "2.7.105"
+    target_version "2.7.105" do
 
-    session = "hscan"
+      session = "hscan"
 
-    @r.hmset "#{session}:foo", ["key0", "val0", "key1", "val1", "key2", "val2"]
-    command "hscan foo 0", session
-    body_was :response, /1\) \"0\"\n2\) 1\) \"key/
+      @r.hmset "#{session}:foo", ["key0", "val0", "key1", "val1", "key2", "val2"]
+      command "hscan foo 0", session
+      body_was :response, /1\) \"0\"\n2\) 1\) \"key/
+    end
   end
 
   def test_command_sets_correct_key
@@ -230,40 +234,50 @@ class TestTryRedis < MiniTest::Test
   end
 
   def test_bitpos_empty
-    @r.del "foo"
+    target_version "2.9.11" do
+      @r.del "foo"
 
-    command_with_body "bitpos foo 0", response: "(integer) 0"
+      command_with_body "bitpos foo 0", response: "(integer) 0"
 
-    command_with_body "bitpos foo 1", response: "(integer) -1"
+      command_with_body "bitpos foo 1", response: "(integer) -1"
+    end
   end
 
   def test_bitpos_notempty
-    @r.set "foo", "\xff\xf0\x00"
-    command_with_body "bitpos foo 0", response: "(integer) 12"
+    target_version "2.9.11" do
+      @r.set "foo", "\xff\xf0\x00"
+      command_with_body "bitpos foo 0", response: "(integer) 12"
 
-    @r.set "foo", "\x00\x0f\x00"
-    command_with_body "bitpos foo 1", response: "(integer) 12"
+      @r.set "foo", "\x00\x0f\x00"
+      command_with_body "bitpos foo 1", response: "(integer) 12"
+    end
   end
 
   def test_bitpos_with_positions
-    @r.set "foo", "\xff\xff\xff"
+    target_version "2.9.11" do
+      @r.set "foo", "\xff\xff\xff"
 
-    command_with_body "bitpos foo 0", response: "(integer) 24"
-    command_with_body "bitpos foo 0 0", response: "(integer) 24"
-    command_with_body "bitpos foo 0 0 -1", response: "(integer) -1"
+      command_with_body "bitpos foo 0", response: "(integer) 24"
+      command_with_body "bitpos foo 0 0", response: "(integer) 24"
+      command_with_body "bitpos foo 0 0 -1", response: "(integer) -1"
+    end
   end
 
   def test_bitpos_one_intervals
-    @r.set "foo", "\x00\xff\x00"
+    target_version "2.9.11" do
+      @r.set "foo", "\x00\xff\x00"
 
-    command_with_body "bitpos foo 1 0 -1", response: "(integer) 8"
-    command_with_body "bitpos foo 1 1 -1", response: "(integer) 8"
-    command_with_body "bitpos foo 1 2 -1", response: "(integer) -1"
-    command_with_body "bitpos foo 1 2 200", response: "(integer) -1"
-    command_with_body "bitpos foo 1 1 1", response: "(integer) 8"
+      command_with_body "bitpos foo 1 0 -1", response: "(integer) 8"
+      command_with_body "bitpos foo 1 1 -1", response: "(integer) 8"
+      command_with_body "bitpos foo 1 2 -1", response: "(integer) -1"
+      command_with_body "bitpos foo 1 2 200", response: "(integer) -1"
+      command_with_body "bitpos foo 1 1 1", response: "(integer) 8"
+    end
   end
 
   def test_bitpos_invalid_arguments
-    command_with_body "bitpos foo 2", error: /The bit argument must be /
+    target_version "2.9.11" do
+      command_with_body "bitpos foo 2", error: /The bit argument must be /
+    end
   end
 end
