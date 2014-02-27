@@ -27,6 +27,20 @@ class TestTryRedis < MiniTest::Test
     assert_match matcher, last_response.body
   end
 
+  def body_was key, matcher
+    json = JSON.parse last_response.body
+    assert_match matcher, json[key.to_s]
+  end
+
+  def command_with_body comm, args={}
+    session_id = args.delete(:session_id)
+    command comm, session_id
+
+    args.each do |k,v|
+      body_was k, v
+    end
+  end
+
   def test_homepage
     get '/'
     assert last_response.ok?
@@ -211,5 +225,47 @@ class TestTryRedis < MiniTest::Test
 
     command "set bug issue-25", ""
     response_was /"session_id":".+"/
+  end
+
+  def test_bitpos_empty
+    @r.del "foo"
+
+    command "bitpos foo 0"
+    body_was 'response', /"0"/
+
+    command "bitpos foo 1"
+    body_was 'response', /"-1"/
+  end
+
+  def test_bitpos_notempty
+    @r.set "foo", "\xff\xf0\x00"
+    command "bitpos foo 0"
+    body_was 'response', /"12"/
+
+    @r.set "foo", "\x00\x0f\x00"
+    command "bitpos foo 1"
+    body_was 'response', /"12"/
+  end
+
+  def test_bitpos_with_positions
+    @r.set "foo", "\xff\xff\xff"
+
+    command_with_body "bitpos foo 0", response: /"24"/
+    command_with_body "bitpos foo 0 0", response: /"24"/
+    command_with_body "bitpos foo 0 0 -1", response: /"-1"/
+  end
+
+  def test_bitpos_one_intervals
+    @r.set "foo", "\x00\xff\x00"
+
+    command_with_body "bitpos foo 1 0 -1", response: /"8"/
+    command_with_body "bitpos foo 1 1 -1", response: /"8"/
+    command_with_body "bitpos foo 1 2 -1", response: /"-1"/
+    command_with_body "bitpos foo 1 2 200", response: /"-1"/
+    command_with_body "bitpos foo 1 1 1", response: /"8"/
+  end
+
+  def test_bitpos_invalid_arguments
+    command_with_body "bitpos foo 2", error: /The bit argument must be /
   end
 end

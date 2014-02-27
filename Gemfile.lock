@@ -1,9 +1,9 @@
 GIT
-  remote: https://github.com/redis/redis-rb
-  revision: 461dd435a7aa3f3b0077f481c5d4219913d6705c
-  ref: 461dd435a7aa3f3b0077f481c5d4219913d6705c
+  remote: https://github.com/badboy/redis-rb
+  revision: 49294de18eea230b76c9dacdfe89441b9ac37f2f
+  ref: 49294de18eea230b76c9dacdfe89441b9ac37f2f
   specs:
-    redis (3.0.5)
+    redis (3.0.7)
 
 GEM
   remote: https://rubygems.org/

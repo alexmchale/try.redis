@@ -5,9 +5,9 @@ module NamespaceTools
   ARGUMENT_ERROR = -> cmd { {error: "ERR wrong number of arguments for '#{cmd}' command"} }
 
   ALLOWED_COMMANDS = %w[
-    append bitcount bitop echo getbit getrange hmget hsetnx incrbyfloat
+    append echo getrange hmget hsetnx incrbyfloat
     hincrbyfloat decr decrby del discard exec linsert lpushx persist pexpire
-    pexpireat ping pttl psetex rpushx setbit setex setrange strlen time zcount
+    pexpireat ping pttl psetex rpushx setex setrange strlen time zcount
     zrank zremrangebyrank zrevrangebyscore zrevrank exists expire expireat get
     getset hdel hexists hget hgetall hincrby hkeys hlen hmset hset hvals incr
     incrby info keys lindex llen lpop lpush lrange lrem lset ltrim mget mset
@@ -16,6 +16,7 @@ module NamespaceTools
     srandmember srem sunion sunionstore ttl type zadd zcard zincrby zrange
     zrangebyscore zrem zremrangebyscore zrevrange zscore
     scan sscan hscan zscan
+    bitcount bitop getbit setbit bitpos
   ]
 
   # These are manually converted to integer output

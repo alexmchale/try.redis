@@ -15,7 +15,7 @@ gem 'sinatra', '~> 1.4.3', :require => 'sinatra/base'
 gem 'haml', '~> 4.0.0'
 gem 'sass', '~>3.2.7'
 gem 'json', '~>1.7.7'
-gem 'redis', git: "https://github.com/redis/redis-rb", ref: "461dd435a7aa3f3b0077f481c5d4219913d6705c"
+gem 'redis', git: "https://github.com/badboy/redis-rb", ref: "49294de18eea230b76c9dacdfe89441b9ac37f2f"
 gem 'rdiscount', '~>2.1.7'
 gem 'puma', '~>2.3.1'
 gem 'redis-namespace', '~>1.3.1'
