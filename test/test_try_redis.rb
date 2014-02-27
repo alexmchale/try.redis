@@ -16,6 +16,7 @@ class TestTryRedis < MiniTest::Test
     TryRedis
   end
 
+  # Helper commands
   def command arg, session_id=nil
     url = "/eval?command=#{CGI.escape arg}"
     url << "&session_id=#{session_id}" if session_id
@@ -40,6 +41,7 @@ class TestTryRedis < MiniTest::Test
       body_was k, v
     end
   end
+  # Helper commands end
 
   def test_homepage
     get '/'
@@ -49,77 +51,78 @@ class TestTryRedis < MiniTest::Test
 
   def test_eval_returns_set_value
     command "get foo"
-    assert_match /{"response":"\(nil\)"/, last_response.body
+    body_was :response, "(nil)"
 
     command "set foo bar"
-    assert_match /{"response":"OK"/, last_response.body
+    body_was :response, "OK"
 
     command "get foo"
-    assert_match /{"response":"\\"bar\\""/, last_response.body
+    body_was :response, '"bar"'
   end
 
   def test_eval_returns_argument_error
     command "keys"
-    response_was /"\(error\) ERR wrong number of arguments for 'keys' command"/
+    body_was :error, "ERR wrong number of arguments for 'keys' command"
   end
 
   def test_eval_returns_error_for_unknown
     command "unknown"
-    response_was /\(error\) I'm sorry, I don't recognize that command./
+    body_was :error, "I'm sorry, I don't recognize that command."
   end
 
   def test_eval_responds_to_help
     command "help"
-    response_was /{"notification":"Please type HELP for one of these commands:/
+    body_was :notification, "Please type HELP for one of these commands:"
 
     command "help set"
-    response_was /{"notification":"<h1>SET key value/
+    body_was :notification,  "<h1>SET key value"
   end
 
   def test_eval_responds_to_help_subsection
     command "help @string"
-    response_was /{"notification":"<strong>/
+    body_was :notification, "<strong>"
   end
 
   def test_eval_responds_to_help_missing_subsection
     command "help @foo"
-    response_was /{"notification":"No help for this group/
+    body_was :notification, "No help for this group"
   end
 
   def test_eval_responds_to_tutorial
     command "tutorial"
-    response_was /{"notification":"<p>Redis is what is called a key-value store/
+    body_was :notification, "<p>Redis is what is called a key-value store"
   end
 
   def test_eval_responds_to_prev
     command "previous"
-    response_was /{"notification":"<p>That wraps up the <em>Try Redis<\/em> tutorial./
+    body_was :notification, "<p>That wraps up the <em>Try Redis</em> tutorial."
   end
 
   def test_eval_responds_to_next
     command "next"
     response_was /{"notification":"<p>Redis is what is called a key-value store/
+    body_was :notification, "<p>Redis is what is called a key-value store"
   end
 
   def test_eval_responds_to_tutorial_id
     command "t2"
-    response_was /{"notification":"<p>Other common operations provided/
+    body_was :notification, "<p>Other common operations provided"
   end
 
   def test_eval_responds_to_namespace
     command "namespace"
-    response_was /{"notification":"[a-f0-9]{64}/
+    body_was :notification,  /^[a-f0-9]{64}$/
   end
 
   def test_transaction_works_as_expected
     command "multi"
-    response_was /{"response":"OK"/
+    body_was :response, "OK"
 
     command "ping"
-    response_was /{"response":"QUEUED"/
+    body_was :response, "QUEUED"
 
     command "exec"
-    response_was /{"response":"1\) \\\"PONG\\\"/
+    body_was :response, "1) \"PONG\""
   end
 
   def test_extended_set
@@ -129,41 +132,40 @@ class TestTryRedis < MiniTest::Test
     val = "bar"
     exp = "bar"
     command "set #{key} #{val}", session
-    response_was /{"response":"OK"/
+    body_was :response, "OK"
     assert_equal exp, @r.get("#{session}:#{key}")
 
     key = "foo"
     val = "next-val"
     exp = "bar"
     command "set #{key} #{val} nx", session
-    response_was /{"response":"\(nil\)"/
+    body_was :response, "(nil)"
     assert_equal exp, @r.get("#{session}:#{key}")
 
     key = "foo"
     val = "next-val"
     exp = "next-val"
     command "set #{key} #{val} xx", session
-    response_was /{"response":"OK"/
+    body_was :response, "OK"
     assert_equal exp, @r.get("#{session}:#{key}")
 
     key = "non-exist"
     val = "bar"
     exp = "bar"
     command "set #{key} #{val} nx", session
-    response_was /{"response":"OK"/
+    body_was :response, "OK"
     assert_equal exp, @r.get("#{session}:#{key}")
 
     key = "non-exist2"
     val = "bar"
     exp = nil
     command "set #{key} #{val} xx", session
-    response_was /{"response":"\(nil\)"/
+    body_was :response, "(nil)"
     assert_equal exp, @r.get("#{session}:#{key}")
   end
 
   def test_ping
-    command "ping"
-    response_was /{"response":"PONG"/
+    command_with_body "ping", response: "PONG"
   end
 
   def test_scan
@@ -173,7 +175,7 @@ class TestTryRedis < MiniTest::Test
 
     @r.set "#{session}:foo", "bar"
     command "scan 0", session
-    response_was /{"response":"1\) \\\"0\\\"\\n2\) 1\) \\\"scan:foo\\\"/
+    body_was :response, /1\) \"0\"\n2\) 1\) \"scan:foo\"/
   end
 
   def test_sscan
@@ -183,7 +185,7 @@ class TestTryRedis < MiniTest::Test
 
     @r.sadd "#{session}:foo", ["bar", "baz", "bam"]
     command "sscan foo 0", session
-    response_was /{"response":"1\) \\\"0\\\"\\n2\) 1\) /
+    body_was :response, /1\) \"0\"\n2\) 1\) /
   end
 
   def test_zscan
@@ -193,7 +195,7 @@ class TestTryRedis < MiniTest::Test
 
     @r.zadd "#{session}:foo", [0, "bar", 1, "baz", 2, "bam"]
     command "zscan foo 0", session
-    response_was /{"response":"1\) \\\"0\\\"\\n2\) 1\) \\\"/
+    body_was :response, /1\) \"0\"\n2\) 1\) \"/
   end
 
   def test_hscan
@@ -203,7 +205,7 @@ class TestTryRedis < MiniTest::Test
 
     @r.hmset "#{session}:foo", ["key0", "val0", "key1", "val1", "key2", "val2"]
     command "hscan foo 0", session
-    response_was /{"response":"1\) \\\"0\\\"\\n2\) 1\) \\\"key/
+    body_was :response, /1\) \"0\"\n2\) 1\) \"key/
   end
 
   def test_command_sets_correct_key
@@ -215,36 +217,32 @@ class TestTryRedis < MiniTest::Test
 
   def test_command_returns_new_session
     command "set bug issue-25", "valid-session-id"
-    response_was /"session_id":"valid-session-id"/
+    body_was :session_id, /^valid-session-id/
 
     command "set bug issue-25", nil
-    response_was /"session_id":".+"/
+    body_was :session_id, /^[a-zA-Z0-9]+/
 
     command "set bug issue-25", "null"
-    response_was /"session_id":".+"/
+    body_was :session_id, /^[a-zA-Z0-9]+/
 
     command "set bug issue-25", ""
-    response_was /"session_id":".+"/
+    body_was :session_id, /^[a-zA-Z0-9]+/
   end
 
   def test_bitpos_empty
     @r.del "foo"
 
-    command "bitpos foo 0"
-    body_was 'response', /"0"/
+    command_with_body "bitpos foo 0", response: /"0"/
 
-    command "bitpos foo 1"
-    body_was 'response', /"-1"/
+    command_with_body "bitpos foo 1", response: /"-1"/
   end
 
   def test_bitpos_notempty
     @r.set "foo", "\xff\xf0\x00"
-    command "bitpos foo 0"
-    body_was 'response', /"12"/
+    command_with_body "bitpos foo 0", response: /"12"/
 
     @r.set "foo", "\x00\x0f\x00"
-    command "bitpos foo 1"
-    body_was 'response', /"12"/
+    command_with_body "bitpos foo 1", response: /"12"/
   end
 
   def test_bitpos_with_positions
