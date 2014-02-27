@@ -190,6 +190,11 @@ module NamespaceTools
       return "PONG"
     end
 
+    # Atleast hscan and zscan return nested arrays here.
+    if ['scan', 'hscan', 'zscan', 'sscan'].include?(cmd)
+      input[1].flatten!
+    end
+
     case input
     when nil
       '(nil)'
