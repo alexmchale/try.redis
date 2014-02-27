@@ -41,7 +41,7 @@ end
 
 def target_version(target)
   if redis_version < target
-    skip("Requires Redis > #{target}") if respond_to?(:skip)
+    skip("Requires Redis >= #{target}") if respond_to?(:skip)
   else
     yield
   end
