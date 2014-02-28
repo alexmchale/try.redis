@@ -31,7 +31,6 @@ class TryRedis < Sinatra::Base
     enable  :logging
     disable :dump_errors
     set :session_secret, "MWRWTEYhNW10V2x3OXAuego="
-    register Sinatra::Reloader
   end
 
   enable :sessions
