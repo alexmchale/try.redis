@@ -74,7 +74,7 @@ class TryRedis < Sinatra::Base
     # Attempt to parse the given command string.
     argv =
       begin
-        shellsplit(command.to_s)
+        cli_split(command.to_s)
       rescue Exception => e
         STDERR.puts e.message
         e.backtrace.each {|bt| STDERR.puts bt}

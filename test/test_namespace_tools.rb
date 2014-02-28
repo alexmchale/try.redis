@@ -44,7 +44,7 @@ class TestNamespaceTools < Minitest::Test
     end
   end
 
-  def test_shellsplit
+  def test_cli_split
     to_test = [
       [ ["set", "foo", "bar"], "set foo bar" ],
       [ ["set", "b\\*", "bar"], "set b\\* bar" ],
@@ -53,7 +53,27 @@ class TestNamespaceTools < Minitest::Test
     ]
 
     to_test.each do |exp, line|
-      assert_equal exp, NamespaceTools.shellsplit(line)
+      assert_equal exp, NamespaceTools.cli_split(line)
+    end
+  end
+
+  # cli split converts \xFF to ASCII-8BIT, which is not the same as UTF-8
+  # so we need to catch it
+  def _byte_equal a, b
+    a.zip(b).all? { |(l,r)| l.bytes.to_a == r.bytes.to_a }
+  end
+
+  def test_cli_split_with_special_characters
+    to_test = [
+      [ ["\xff\xff"],       '"\xff\xff"' ],
+      [ ['\xff\xff'],       "'\\xff\\xff'" ],
+      [ ["foo bar"],        '"foo bar"' ],
+      [ ["foo bar", "baz"], '"foo bar" baz' ],
+      [ ["foo bar"],        "'foo bar'" ],
+    ]
+
+    to_test.each do |exp, line|
+      assert _byte_equal(exp, NamespaceTools.cli_split(line))
     end
   end
 

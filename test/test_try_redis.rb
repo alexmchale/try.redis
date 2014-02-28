@@ -39,11 +39,15 @@ class TestTryRedis < MiniTest::Test
   end
 
   def command_with_body comm, args={}
-    session_id = args.delete(:session_id)
-    command comm, session_id
+    command comm
 
     args.each do |k,v|
       body_was k, v
+    end
+
+    if args[:error].nil?
+      json = JSON.parse last_response.body
+      assert_equal nil, json['error']
     end
   end
   # Helper commands end

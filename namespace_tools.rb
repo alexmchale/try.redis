@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require_relative 'lib/shell_escape'
+
 module NamespaceTools
   SYNTAX_ERROR = {error: "ERR Syntax error"}.freeze
   ARGUMENT_ERROR = -> cmd { {error: "ERR wrong number of arguments for '#{cmd}' command"} }
@@ -241,7 +243,7 @@ module NamespaceTools
         str
       end
     when String, Numeric
-      "\"#{input}\""
+      input.inspect
     else
       input
     end
@@ -328,27 +330,5 @@ module NamespaceTools
     nil
   end
 
-
-  # Taken from shellwords.rb (in ruby stdlib)
-  # and modified to not remove escaping
-  #
-  # Example:
-  #
-  #   argv = shellsplit('set b\* foo')
-  #   argv #=> ["set", "b\\*", "foo"]
-  #
-  def shellsplit(line)
-    words = []
-    field = ''
-    line.scan(/\G\s*(?>([^\s\\\'\"]+)|'([^\']*)'|"((?:[^\"\\]|\\.)*)"|(\\\S?)|(\S))(\s|\z)?/m) do
-      |word, sq, dq, esc, garbage, sep|
-      raise ArgumentError, "Unmatched double quote: #{line.inspect}" if garbage
-      field << (word || sq || (dq && dq.gsub(/\\(.)/, '\\1')) || esc)
-      if sep
-        words << field
-        field = ''
-      end
-    end
-    words
-  end
+  include ShellEscape
 end
