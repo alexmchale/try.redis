@@ -238,6 +238,18 @@ class TestTryRedis < MiniTest::Test
     body_was :session_id, /^[a-zA-Z0-9]+/
   end
 
+  def test_bitpos_with_session_id
+    target_version "2.9.11" do
+      session_id = "id"
+      @r.set "#{session_id}:foo", "a"
+
+      command "bitpos foo 1", session_id
+
+      body_was :session_id, session_id
+      body_was :response, "(integer) 1"
+    end
+  end
+
   def test_bitpos_empty
     target_version "2.9.11" do
       command_with_body "bitpos foo 0", response: "(integer) 0"
