@@ -298,4 +298,10 @@ class TestTryRedis < MiniTest::Test
       command_with_body "bitpos foo 2", error: /The bit argument must be /
     end
   end
+
+  def test_strlen_works
+    set_session "strlen"
+    @r.set "strlen:foo", "bar"
+    command_with_body "strlen foo", response: "(integer) 3"
+  end
 end

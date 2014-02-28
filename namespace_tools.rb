@@ -27,6 +27,7 @@ module NamespaceTools
     hincrby hdel
     lpush rpush lpushx rpushx lrem
     bitpos
+    strlen
   ]
 
   # These commands return a nested array in ruby, need to be flattened
@@ -43,11 +44,8 @@ module NamespaceTools
         if args.size != 1
           return ARGUMENT_ERROR[command]
         end
-      when "strlen"
-        # Manually namespace this, redis-rb does not know it.
-        key = add_namespace(ns, args.shift)
-        return [ command, key ]
       when "bitpos"
+        # Manually namespace this, redis-namespace does not know it.
         args[0] = add_namespace(ns, args[0])
         return [ command, *args ]
       when "zadd", "sadd", "zrem", "srem"
