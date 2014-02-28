@@ -16,8 +16,13 @@ class TestTryRedis < MiniTest::Test
     TryRedis
   end
 
+  def set_session session_id
+    @session_id = session_id
+  end
+
   # Helper commands
   def command arg, session_id=nil
+    session_id ||= @session_id if @session_id
     url = "/eval?command=#{CGI.escape arg}"
     url << "&session_id=#{session_id}" if session_id
     get url
@@ -235,28 +240,28 @@ class TestTryRedis < MiniTest::Test
 
   def test_bitpos_empty
     target_version "2.9.11" do
-      @r.del "foo"
-
       command_with_body "bitpos foo 0", response: "(integer) 0"
-
       command_with_body "bitpos foo 1", response: "(integer) -1"
     end
   end
 
   def test_bitpos_notempty
     target_version "2.9.11" do
-      @r.set "foo", "\xff\xf0\x00"
+      set_session "bitpos"
+
+      @r.set "bitpos:foo", "\xff\xf0\x00"
       command_with_body "bitpos foo 0", response: "(integer) 12"
 
-      @r.set "foo", "\x00\x0f\x00"
+      @r.set "bitpos:foo", "\x00\x0f\x00"
       command_with_body "bitpos foo 1", response: "(integer) 12"
     end
   end
 
   def test_bitpos_with_positions
     target_version "2.9.11" do
-      @r.set "foo", "\xff\xff\xff"
+      @r.set "bitpos:foo", "\xff\xff\xff"
 
+      set_session "bitpos"
       command_with_body "bitpos foo 0", response: "(integer) 24"
       command_with_body "bitpos foo 0 0", response: "(integer) 24"
       command_with_body "bitpos foo 0 0 -1", response: "(integer) -1"
@@ -265,8 +270,9 @@ class TestTryRedis < MiniTest::Test
 
   def test_bitpos_one_intervals
     target_version "2.9.11" do
-      @r.set "foo", "\x00\xff\x00"
+      @r.set "bitpos:foo", "\x00\xff\x00"
 
+      set_session "bitpos"
       command_with_body "bitpos foo 1 0 -1", response: "(integer) 8"
       command_with_body "bitpos foo 1 1 -1", response: "(integer) 8"
       command_with_body "bitpos foo 1 2 -1", response: "(integer) -1"

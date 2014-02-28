@@ -47,6 +47,9 @@ module NamespaceTools
         # Manually namespace this, redis-rb does not know it.
         key = add_namespace(ns, args.shift)
         return [ command, key ]
+      when "bitpos"
+        args[0] = add_namespace(ns, args[0])
+        return [ command, *args ]
       when "zadd", "sadd", "zrem", "srem"
         return [ command, args.shift, args ]
       when "sort"
