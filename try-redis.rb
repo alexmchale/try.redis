@@ -76,8 +76,6 @@ class TryRedis < Sinatra::Base
       begin
         cli_split(command.to_s)
       rescue Exception => e
-        STDERR.puts e.message
-        e.backtrace.each {|bt| STDERR.puts bt}
         return { "error" => e.message }
       end
     return { "error" => "No command received." } unless argv[0]
@@ -89,10 +87,6 @@ class TryRedis < Sinatra::Base
     begin
       { "response" => execute_redis(argv) }
     rescue Exception => e
-      if production?
-        STDERR.puts e.message
-        e.backtrace.each {|bt| STDERR.puts bt}
-      end
       { "error" => "(error) #{e.message}" }
     end
   end
