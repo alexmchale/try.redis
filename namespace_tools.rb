@@ -47,6 +47,10 @@ module NamespaceTools
           return ARGUMENT_ERROR[command]
         end
       when "bitpos"
+        if args.size < 2
+          return ARGUMENT_ERROR[command]
+        end
+
         # Manually namespace this, redis-namespace does not know it.
         args[0] = add_namespace(ns, args[0])
         return [ command, *args ]
