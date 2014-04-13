@@ -78,7 +78,7 @@ class TryRedis < Sinatra::Base
       rescue Exception => e
         return { "error" => e.message }
       end
-    return { "error" => "No command received." } unless argv[0]
+    return { "error" => false } unless argv[0]
 
     # Test if the command is an internal TryRedis command.
     internal_result = internal_command(*argv)

@@ -21,7 +21,9 @@ function submitCommand(text, dontClearInput) {
     if (data.response !== undefined) {
       append(data.response, "response");
     } else if (data.error !== undefined) {
-      append(data.error, "error", "", true);
+      if (data.error) {
+        append(data.error, "error", "", true);
+      }
     } else if (data.notification !== undefined) {
       append(data.notification, "notification", "", true);
     } else {
