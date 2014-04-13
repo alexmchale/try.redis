@@ -303,9 +303,67 @@ class TestTryRedis < MiniTest::Test
     end
   end
 
+  def test_bitpos_no_arguments
+    target_version "2.9.11" do
+      command_with_body "bitpos", error: /ERR wrong number of arguments for 'bitpos' command/
+    end
+  end
+
   def test_strlen_works
     set_session "strlen"
     @r.set "strlen:foo", "bar"
     command_with_body "strlen foo", response: "(integer) 3"
+  end
+
+  def test_pfadd_no_arguments
+    target_version "2.9.11" do
+      command_with_body "pfadd", error: /ERR wrong number of arguments for 'pfadd' command/
+    end
+  end
+
+  def test_pfcount_no_arguments
+    target_version "2.9.11" do
+      command_with_body "pfcount", error: /ERR wrong number of arguments for 'pfcount' command/
+    end
+  end
+
+  def test_pfadd
+    target_version "2.9.11" do
+      set_session "hll"
+
+      command_with_body "pfadd hll foo bar baz", response: "(integer) 1"
+      assert_equal @r.pfcount("hll:hll"), 3
+    end
+  end
+
+  def test_pfcount
+    target_version "2.9.11" do
+      set_session "hll"
+
+      command_with_body "pfadd hll foo bar baz", response: "(integer) 1"
+      command_with_body "pfcount hll", response: "(integer) 3"
+      assert_equal @r.pfcount("hll:hll"), 3
+    end
+  end
+
+  def test_pfmerge_wrong_argument_count
+    target_version "2.9.11" do
+      command_with_body "pfmerge", error: /ERR wrong number of arguments for 'pfmerge' command/
+      command_with_body "pfmerge foo", error: /ERR wrong number of arguments for 'pfmerge' command/
+    end
+  end
+
+  def test_pfmerge
+    target_version "2.9.11" do
+      set_session "hll"
+
+      command_with_body "pfadd hll1 foo bar zap a", response: "(integer) 1"
+      command_with_body "pfadd hll2 a b c foo",     response: "(integer) 1"
+      command_with_body "pfmerge hll3 hll1 hll2",   response: "OK"
+      command_with_body "pfcount hll3",             response: "(integer) 6"
+      assert_equal 4, @r.pfcount("hll:hll1")
+      assert_equal 4, @r.pfcount("hll:hll2")
+      assert_equal 6, @r.pfcount("hll:hll3")
+    end
   end
 end

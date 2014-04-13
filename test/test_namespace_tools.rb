@@ -110,4 +110,35 @@ class TestNamespaceTools < Minitest::Test
       parse_command_equal exp, cmd
     end
   end
+
+  def test_parse_pfadd
+    to_test = [
+      [ ['pfadd', 'ns:hll', 'foo', 'bar'], ['pfadd', 'hll', 'foo', 'bar'] ],
+    ]
+
+    to_test.each do |exp, cmd|
+      parse_command_equal exp, cmd
+    end
+  end
+
+  def test_parse_pfcount
+    to_test = [
+      [ ['pfcount', 'ns:hll'], ['pfcount', 'hll'] ],
+    ]
+
+    to_test.each do |exp, cmd|
+      parse_command_equal exp, cmd
+    end
+  end
+
+  def test_parse_pfmerge
+    to_test = [
+      [ ['pfmerge', 'ns:hll1', 'ns:hll2'], ['pfmerge', 'hll1', 'hll2'] ],
+      [ ['pfmerge', 'ns:hll1', 'ns:hll2', 'ns:hll3'], ['pfmerge', 'hll1', 'hll2', 'hll3'] ],
+    ]
+
+    to_test.each do |exp, cmd|
+      parse_command_equal exp, cmd
+    end
+  end
 end

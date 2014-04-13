@@ -19,6 +19,7 @@ module NamespaceTools
     zrangebyscore zrem zremrangebyscore zrevrange zscore
     scan sscan hscan zscan
     bitcount bitop getbit setbit bitpos
+    pfadd pfcount pfmerge
   ]
 
   # These are manually converted to integer output
@@ -30,6 +31,7 @@ module NamespaceTools
     lpush rpush lpushx rpushx lrem
     bitpos
     strlen
+    pfadd pfcount
   ]
 
   # These commands return a nested array in ruby, need to be flattened
@@ -53,6 +55,23 @@ module NamespaceTools
 
         # Manually namespace this, redis-namespace does not know it.
         args[0] = add_namespace(ns, args[0])
+        return [ command, *args ]
+      when "pfadd", "pfcount"
+        if args.size < 1
+          return ARGUMENT_ERROR[command]
+        end
+
+        # Manually namespace this, redis-namespace does not know it.
+        args[0] = add_namespace(ns, args[0])
+        return [ command, *args ]
+      when "pfmerge"
+        if args.size < 2
+          return ARGUMENT_ERROR[command]
+        end
+        # Manually namespace this, redis-namespace does not know it.
+        args.map! { |arg|
+          add_namespace(ns, arg)
+        }
         return [ command, *args ]
       when "zadd", "sadd", "zrem", "srem"
         return [ command, args.shift, args ]
