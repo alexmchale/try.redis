@@ -130,6 +130,9 @@ $(document).ready(function () {
     submitCommand($(this).text());
     return false;
   });
+  $(document).on('click', "a[href='#comment']", function () {
+    return false;
+  });
   /*
   $("a[data-run-command]").live('click',function () {
     submitCommand($.data(this,'run-command'))

@@ -13,6 +13,8 @@ seconds until it will be deleted.
 <pre><code>
     <a href="#run">TTL resource:lock</a> => 113
     <a href="#run">TTL count</a> => -1
+    <a href="#comment" class="comment">//Time after 113s again.</a>
+    <a href="#run">TTL resource:lock</a> => -2
 </code></pre>
 
 The *-1* for the [TTL](#help) of the key *count* means that it will never expire. Note
