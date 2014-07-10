@@ -20,5 +20,5 @@ Note that the list now only has one element:
 
 <pre><code>
     <a href="#run">LLEN friends</a> => 1
-    <a href="#run">LRANGE friends 0 -1</a> => ["Alice"]
+    <a href="#run">LRANGE friends 0 -1</a> => 1) "Alice"
 </code></pre>

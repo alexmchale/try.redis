@@ -1,14 +1,14 @@
-[SISMEMBER](#help) tests if the given value is in the set.
+[SISMEMBER](#help) tests if the given value is in the set. It returns *1* if the value is there and *0* if it is not.
 
 <pre></code>
-    <a href="#run">SISMEMBER superpowers "flight"</a> => true
-    <a href="#run">SISMEMBER superpowers "reflexes"</a> => false
+    <a href="#run">SISMEMBER superpowers "flight"</a> => 1
+    <a href="#run">SISMEMBER superpowers "reflexes"</a> => 0
 </code></pre>
 
 [SMEMBERS](#help) returns a list of all the members of this set.
 
 <pre></code>
-    <a href="#run">SMEMBERS superpowers</a> => ["flight","x-ray vision"]
+    <a href="#run">SMEMBERS superpowers</a> => 1) "flight", 2) "x-ray vision"
 </code></pre>
 
 [SUNION](#help) combines two or more sets and returns the list of all elements.
@@ -16,5 +16,5 @@
 <pre></code>
     <a href="#run">SADD birdpowers "pecking"</a>
     <a href="#run">SADD birdpowers "flight"</a>
-    <a href="#run">SUNION superpowers birdpowers</a> => ["flight","x-ray vision","pecking"]
+    <a href="#run">SUNION superpowers birdpowers</a> => 1) "pecking", 2) "x-ray vision", 3) "flight"
 </code></pre>
