@@ -14,3 +14,8 @@ stored at key server:name?" and Redis will reply with "fido":
 <pre><code>
     <a href="#run">GET server:name</a> => "fido"
 </code></pre>
+
+<span class="tip">
+Tip: You can click the commands above to automatically execute them.
+The text after the arrow (=>) shows the expected output.
+</span>
