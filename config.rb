@@ -14,7 +14,7 @@ daemonize false
 pidfile puma_pid
 state_path puma_state
 
-threads 2, 4
+threads 0, 2
 
 bind puma_sock
 activate_control_app puma_control
