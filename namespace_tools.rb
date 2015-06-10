@@ -20,6 +20,7 @@ module NamespaceTools
     scan sscan hscan zscan
     bitcount bitop getbit setbit bitpos
     pfadd pfcount pfmerge
+    zrangebylex zrevrangebylex zremrangebylex zlexcount
   ]
 
   # These are manually converted to integer output
@@ -32,6 +33,7 @@ module NamespaceTools
     bitpos
     strlen
     pfadd pfcount
+    zlexcount zremrangebylex
   ]
 
   # These commands return a nested array in ruby, need to be flattened
@@ -123,6 +125,12 @@ module NamespaceTools
         end
 
         return [ command, head, *tail, options ]
+      when "zrangebylex", "zremrangebylex", "zrevrangebylex", "zlexcount"
+        # Only the first argument is a key, but special argument at the end.
+
+        head = add_namespace(ns, args.shift)
+        tail = args || []
+        return [ command, head, *tail]
       when "zrangebyscore"
         # Only the first argument is a key, but special arguments at the end.
 

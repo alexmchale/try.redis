@@ -36,7 +36,10 @@ class RedisVersion
 end
 
 def redis_version
-  RedisVersion.new Redis.new.info['redis_version']
+  port = ENV['REDIS_PORT'] || 6379
+  host = ENV['REDIS_HOST'] || 'localhost'
+  r = Redis.new(host: host, port: port)
+  RedisVersion.new r.info['redis_version']
 end
 
 def target_version(target)

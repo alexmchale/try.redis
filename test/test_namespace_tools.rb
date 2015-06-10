@@ -141,4 +141,17 @@ class TestNamespaceTools < Minitest::Test
       parse_command_equal exp, cmd
     end
   end
+
+  def test_parse_lexfamily
+    to_test = [
+      [ ['zrangebylex', 'ns:zset', '-','+'], ['zrangebylex', 'zset', '-', '+'] ],
+      [ ['zremrangebylex', 'ns:zset', '-','+'], ['zremrangebylex', 'zset', '-', '+'] ],
+      [ ['zrevrangebylex', 'ns:zset', '-','+'], ['zrevrangebylex', 'zset', '-', '+'] ],
+      [ ['zlexcount', 'ns:zset', '-','+'], ['zlexcount', 'zset', '-', '+'] ],
+    ]
+
+    to_test.each do |exp, cmd|
+      parse_command_equal exp, cmd
+    end
+  end
 end

@@ -366,4 +366,22 @@ class TestTryRedis < MiniTest::Test
       assert_equal 6, @r.pfcount("hll:hll3")
     end
   end
+
+  def test_lexfamily
+    target_version "2.8.9" do
+      set_session "lex"
+
+      command_with_body "ZADD myzset 0 a 0 b 0 c 0 d 0 e", response: "(integer) 5"
+      command_with_body "ZADD myzset 0 f 0 g", response: "(integer) 2"
+      command_with_body "ZLEXCOUNT myzset - +", response: "(integer) 7"
+      command_with_body "ZLEXCOUNT myzset [b [f", response: "(integer) 5"
+      command_with_body "ZRANGEBYLEX myzset [b [b", response: "1) \"b\"\n"
+      command_with_body "ZREMRANGEBYLEX myzset [b [d", response: "(integer) 3"
+      assert_equal 4, @r.zcard("lex:myzset")
+
+      command_with_body "zlexcount", error: /ERR wrong number of arguments for 'zlexcount' command/
+      command_with_body "zlexcount a", error: /ERR wrong number of arguments for 'zlexcount' command/
+      command_with_body "zlexcount a b c d", error: /ERR wrong number of arguments for 'zlexcount' command/
+    end
+  end
 end
