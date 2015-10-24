@@ -1,6 +1,6 @@
 # INCR key
 # INCRBY key integer
-# DECR key integer
+# DECR key
 # DECRBY key integer
 
 **TIME COMPLEXITY**:

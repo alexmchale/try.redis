@@ -1,4 +1,4 @@
-# DECR key integer
+# DECR key
 
 **TIME COMPLEXITY**:
 O(1)
