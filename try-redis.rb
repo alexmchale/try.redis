@@ -243,6 +243,10 @@ class TryRedis < Sinatra::Base
                Logger.new(File.join(File.dirname(__FILE__),'log','redis.log'))
              end
 
+    if logger
+      logger.level = Logger::WARN
+    end
+
     raw_redis = Redis.new(
       :host => REDIS_HOST,
       :port => REDIS_PORT,
