@@ -2,6 +2,7 @@
 
 require 'logger'
 require 'bundler'
+require 'json'
 Bundler.require(:default, ENV['RACK_ENV'])
 
 require_relative 'namespace_tools'
